@@ -3,108 +3,95 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CODEX - SAT VIEW v3</title>
+    <title>CODEX SYSTEM - GEOLOC</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <style>
-        :root { --blue: #00d9ff; --red: #ff4d4d; --dark: #050505; }
-        body { background: var(--dark); color: white; font-family: 'Segoe UI', sans-serif; margin: 0; overflow: hidden; }
-        
-        /* HEADER AVEC TON AVATAR IA */
-        .header { background: rgba(0,0,0,0.9); padding: 10px; display: flex; align-items: center; border-bottom: 2px solid var(--blue); z-index: 1000; position: relative; }
-        .avatar { width: 60px; height: 60px; border-radius: 50%; border: 2px solid var(--blue); box-shadow: 0 0 15px var(--blue); overflow: hidden; margin-right: 15px; }
-        .avatar img { width: 100%; height: 100%; object-fit: cover; }
-
-        /* LA CARTE REELLE */
-        #map { width: 100%; height: 60vh; background: #000; }
-
-        /* DASHBOARD */
-        .dashboard { padding: 15px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; background: #0a0a0a; height: 40vh; }
-        .stat-box { background: #111; border: 1px solid #222; padding: 10px; border-radius: 5px; }
-        .money { font-size: 1.4rem; color: #f1c40f; font-weight: bold; }
-        
-        .btn { padding: 12px; border: none; border-radius: 4px; font-weight: bold; cursor: pointer; text-transform: uppercase; }
-        .btn-buy { background: var(--blue); color: #000; width: 100%; }
-        .btn-rob { background: transparent; border: 1px solid var(--red); color: var(--red); width: 100%; margin-top: 10px; }
-
-        /* Filtre Noir pour la carte */
-        .leaflet-container { background: #000 !important; }
-        .leaflet-tile-pane { filter: brightness(0.4) invert(1) contrast(3) hue-rotate(180deg); }
+        body { background: #000; color: #fff; font-family: 'Courier New', monospace; margin: 0; overflow: hidden; }
+        .header { background: #0a0a0a; padding: 10px; display: flex; align-items: center; border-bottom: 2px solid #00d9ff; position: relative; z-index: 1000; }
+        .avatar-img { width: 60px; height: 60px; border-radius: 50%; border: 2px solid #00d9ff; object-fit: cover; }
+        #map { width: 100%; height: 50vh; background: #000; }
+        .leaflet-tile-pane { filter: brightness(0.5) invert(1) contrast(2) hue-rotate(180deg); }
+        .ui-panel { padding: 15px; background: #000; height: 40vh; display: flex; flex-direction: column; gap: 10px; }
+        .stat-row { display: flex; justify-content: space-between; background: #111; padding: 10px; border: 1px solid #222; }
+        .money { color: #f1c40f; font-weight: bold; font-size: 1.2rem; }
+        .btn-group { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .btn { padding: 15px; border: none; font-weight: bold; cursor: pointer; text-transform: uppercase; }
+        .btn-buy { background: #00d9ff; color: #000; }
+        .btn-rob { background: #ff4d4d; color: #fff; }
+        #logs { font-size: 0.7rem; color: #2ecc71; height: 60px; overflow-y: auto; background: #050505; padding: 5px; border: 1px solid #222; }
     </style>
 </head>
 <body>
 
 <div class="header">
-    <div class="avatar">
-        <img src="https://i.ibb.co/Lzf7P8Q/avatar-ai.jpg" alt="AI">
-    </div>
-    <div>
-        <div style="color: var(--blue); font-weight: bold; letter-spacing: 2px;">CODEX OPERATIVE</div>
-        <div id="ai-status" style="font-size: 0.7rem; color: #888;">"Carte satellite activée. En attente de cibles."</div>
+    <img src="https://i.ibb.co/Lzf7P8Q/avatar-ai.jpg" class="avatar-img"> <div style="margin-left: 15px;">
+        <div style="color: #00d9ff; font-weight: bold; font-size: 0.9rem;">CODEX OS v4.0</div>
+        <div style="font-size: 0.6rem; color: #888;">GEOLOCALISATION ACTIVE</div>
     </div>
 </div>
 
 <div id="map"></div>
 
-<div class="dashboard">
-    <div class="stat-box" style="grid-column: span 2;">
-        <div style="font-size: 0.7rem; color: #555;">CAPITAL DISPONIBLE</div>
-        <div id="cash-val" class="money">10 000 Ø</div>
-    </div>
-    
-    <div class="stat-box">
-        <button class="btn btn-buy" onclick="addAsset()">ACHETER ICI</button>
-    </div>
-    
-    <div class="stat-box">
-        <button class="btn btn-rob" onclick="robSystem()">BRAQUAGE</button>
+<div class="ui-panel">
+    <div class="stat-row">
+        <span>CAPITAL DISPONIBLE:</span>
+        <span id="cash" class="money">10 000 Ø</span>
     </div>
 
-    <div class="stat-box" style="grid-column: span 2; font-size: 0.7rem; color: #444; overflow-y: auto;" id="logs">
-        > Liaison satellite établie...
+    <div id="logs">> En attente de scan satellite...</div>
+
+    <div class="btn-group">
+        <button class="btn btn-buy" onclick="buyBusiness()">ACHETER ICI</button>
+        <button class="btn btn-rob" onclick="robTarget()">BRAQUER</button>
     </div>
+    <button class="btn" style="background: #333; color: white;" onclick="locateMe()">RE-CENTRER GPS</button>
 </div>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
-    // Initialisation de la carte sur Paris (modifiable)
-    var map = L.map('map').setView([48.8566, 2.3522], 13);
-    
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: 'Codex Sat'
-    }).addTo(map);
+    // Initialisation Map
+    var map = L.map('map').setView([45.5017, -73.5673], 15);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
 
     let cash = 10000;
-    
-    function updateUI() {
-        document.getElementById('cash-val').innerText = cash.toLocaleString() + " Ø";
+    let businessIcon = L.divIcon({className: 'my-div-icon', html: '<div style="background:#00d9ff; width:12px; height:12px; border-radius:50%; border:2px solid white; box-shadow: 0 0 10px #00d9ff;"></div>'});
+
+    function addLog(msg) {
+        const l = document.getElementById('logs');
+        l.innerHTML = "> " + msg + "<br>" + l.innerHTML;
     }
 
-    function addAsset() {
+    // Géolocalisation réelle
+    function locateMe() {
+        map.locate({setView: true, maxZoom: 16});
+    }
+
+    map.on('locationfound', function(e) {
+        L.marker(e.latlng).addTo(map).bindPopup("VOUS ETES ICI").openPopup();
+        addLog("Position GPS verrouillée.");
+    });
+
+    function buyBusiness() {
         if(cash >= 5000) {
             cash -= 5000;
-            let center = map.getCenter();
-            L.circle([center.lat, center.lng], {
-                color: '#00d9ff',
-                fillColor: '#00d9ff',
-                fillOpacity: 0.5,
-                radius: 200
-            }).addTo(map);
-            document.getElementById('logs').innerHTML = "> Secteur sécurisé. Revenus en cours...<br>" + document.getElementById('logs').innerHTML;
-            updateUI();
+            let pos = map.getCenter();
+            L.marker(pos, {icon: businessIcon}).addTo(map).bindPopup("ENTREPRISE CODEX").openPopup();
+            document.getElementById('cash').innerText = cash.toLocaleString() + " Ø";
+            addLog("Acquisition d'entreprise réussie.");
+        } else {
+            addLog("ERREUR: Fonds insuffisants.");
         }
     }
 
-    function robSystem() {
-        let win = Math.random() > 0.5;
-        if(win) {
-            cash += 2000;
-            document.getElementById('logs').innerHTML = "> BRAQUAGE RÉUSSI : +2000 Ø<br>" + document.getElementById('logs').innerHTML;
-        } else {
-            cash -= 1000;
-            document.getElementById('logs').innerHTML = "> ALERTE : Échec du piratage.<br>" + document.getElementById('logs').innerHTML;
-        }
-        updateUI();
+    function robTarget() {
+        let gain = Math.floor(Math.random() * 1500) + 500;
+        cash += gain;
+        document.getElementById('cash').innerText = cash.toLocaleString() + " Ø";
+        addLog("BRAQUAGE RÉUSSI: +" + gain + " Ø");
     }
+
+    // Lancer la loc au démarrage
+    locateMe();
 </script>
 
 </body>
