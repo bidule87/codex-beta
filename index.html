@@ -6,33 +6,39 @@
     <title>GEO EMPIRE - DIRECTION BANCAIRE</title>
     <style>
         :root {
-            --glass: rgba(255, 255, 255, 0.88);
+            --glass-bg: rgba(255, 255, 255, 0.95); /* Opacité renforcée pour la lisibilité */
             --bank-blue: #003366;
-            --accent-blue: #007bff;
-            --locked-red: #e63946;
+            --accent: #007bff;
+            --locked: #d90429;
         }
 
-        body { 
-            /* Image de fond ultra-colorée et nette */
-            background-image: url('https://images.unsplash.com/photo-1431540015161-0bf868a2d407?auto=format&fit=crop&q=80&w=1600');
-            background-size: cover;
-            background-attachment: fixed;
-            background-position: center;
-            font-family: 'Segoe UI', system-ui, sans-serif;
-            margin: 0; padding: 0;
+        body, html { margin: 0; padding: 0; height: 100%; overflow: hidden; }
+
+        /* FOND ANIMÉ (SALLE DE RÉUNION) */
+        .bg-video {
+            position: fixed; right: 0; bottom: 0;
+            min-width: 100%; min-height: 100%;
+            background: url('https://images.unsplash.com/photo-1542744173-8e7e53415bb0?auto=format&fit=crop&q=80&w=1600') center/cover;
+            z-index: -1;
+            animation: slowZoom 20s infinite alternate;
         }
 
-        .overlay { background: rgba(0, 0, 0, 0.2); min-height: 100vh; padding: 20px; }
+        @keyframes slowZoom {
+            from { transform: scale(1); }
+            to { transform: scale(1.1); }
+        }
 
-        /* HEADER TYPE APPLICATION PRO */
-        .app-container {
-            max-width: 1200px; margin: 0 auto;
-            background: var(--glass);
-            backdrop-filter: blur(10px);
-            border-radius: 12px;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.3);
-            overflow: hidden;
-            border: 1px solid rgba(255,255,255,0.3);
+        .overlay { 
+            background: rgba(0, 0, 0, 0.3); 
+            height: 100vh; 
+            display: flex; align-items: center; justify-content: center; 
+        }
+
+        .app-window {
+            width: 95%; max-width: 1100px; height: 90vh;
+            background: var(--glass-bg);
+            border-radius: 8px; box-shadow: 0 25px 50px rgba(0,0,0,0.5);
+            display: flex; flex-direction: column; overflow: hidden;
         }
 
         header {
@@ -40,54 +46,19 @@
             padding: 20px 30px; display: flex; justify-content: space-between; align-items: center;
         }
 
-        .sub-header {
+        .stats-bar {
             background: #f1f3f5; padding: 10px 30px; border-bottom: 1px solid #ddd;
-            display: flex; gap: 40px; font-size: 0.85rem; font-weight: 600;
+            display: flex; gap: 30px; font-size: 0.8rem; font-weight: bold; color: #555;
         }
 
-        .content { padding: 30px; height: 70vh; overflow-y: auto; }
+        .scroll-content { padding: 30px; overflow-y: auto; flex: 1; }
 
-        /* TABLEAUX DE TRANCHES */
-        .section-bank { margin-bottom: 40px; }
-        .section-title { 
-            color: var(--bank-blue); border-bottom: 2px solid var(--bank-blue); 
-            padding-bottom: 10px; margin-bottom: 20px; display: flex; justify-content: space-between;
+        /* SECTIONS ET TABLEAUX */
+        .bank-section { margin-bottom: 35px; }
+        .section-h { 
+            color: var(--bank-blue); border-bottom: 2px solid var(--bank-blue);
+            padding-bottom: 8px; margin-bottom: 15px; font-weight: 800; font-size: 0.9rem;
         }
 
-        table { width: 100%; border-collapse: collapse; background: white; border-radius: 8px; overflow: hidden; }
-        th { background: #e9ecef; padding: 12px; text-align: left; font-size: 0.75rem; color: #495057; }
-        td { padding: 12px; border-bottom: 1px solid #eee; }
-
-        input {
-            padding: 8px; border: 1px solid #ced4da; border-radius: 4px;
-            width: 100%; box-sizing: border-box; font-family: monospace;
-        }
-        .input-rate { font-weight: bold; color: var(--accent-blue); text-align: right; }
-
-        /* BOUTONS */
-        .btn-add {
-            margin-top: 10px; background: none; border: 2px dashed #adb5bd;
-            color: #6c757d; padding: 10px; width: 100%; cursor: pointer; border-radius: 6px;
-        }
-        .btn-add:hover { background: #f8f9fa; color: var(--bank-blue); border-color: var(--bank-blue); }
-
-        .btn-del { color: var(--locked-red); border: none; background: none; cursor: pointer; font-weight: bold; }
-
-        .footer-actions {
-            background: #fff; padding: 20px 30px; border-top: 1px solid #ddd;
-            display: flex; justify-content: space-between; align-items: center;
-        }
-
-        .btn-validate {
-            background: var(--bank-blue); color: white; border: none;
-            padding: 15px 40px; border-radius: 6px; font-weight: bold; cursor: pointer;
-        }
-    </style>
-</head>
-<body>
-
-<div class="overlay">
-    <div class="app-container">
-        <header>
-            <div>
-                <span style="font-size: 1.4rem; font-weight: 800; letter-spacing: 1px;">
+        table { width: 100%; border-collapse: collapse; background: #fff; }
+        th { background: #e9ecef; padding: 1
