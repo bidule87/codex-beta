@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GEO EMPIRE - GESTION</title>
+    <title>GEO EMPIRE - GESTION PROFESSIONNELLE</title>
     <style>
         :root {
             --bg-gray: #f4f4f4;
@@ -12,177 +12,178 @@
             --blue-light: #3498db;
             --border: #ddd;
             --text: #333;
+            --green: #27ae60;
         }
 
         body { 
             background-color: var(--bg-gray); 
+            /* IMAGE DE VEILLE EN FOND */
+            background-image: linear-gradient(rgba(244, 244, 244, 0.9), rgba(244, 244, 244, 0.9)), 
+                              url('https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&q=80&w=1200');
+            background-size: cover;
+            background-attachment: fixed;
             color: var(--text); 
             font-family: 'Segoe UI', Arial, sans-serif;
             margin: 0; padding: 0;
         }
 
-        /* BARRE SUPÉRIEURE (HEADER PRO) */
         header {
-            background-color: var(--white);
+            background: var(--white);
             border-bottom: 1px solid var(--border);
             padding: 10px 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            display: flex; justify-content: space-between; align-items: center;
         }
 
-        .user-profile { display: flex; align-items: center; gap: 10px; }
-        .user-avatar { width: 35px; height: 35px; border-radius: 50%; background: #eee; }
-
-        /* BANDEAU STATISTIQUES (GRIS) */
         .stats-bar {
-            background: #e9e9e9;
+            background: rgba(233, 233, 233, 0.95);
             border-bottom: 1px solid var(--border);
-            display: flex;
-            padding: 8px 20px;
-            gap: 20px;
-            font-size: 0.85rem;
+            display: flex; padding: 10px 20px; gap: 25px; font-size: 0.8rem;
         }
-        .stat-item { display: flex; align-items: center; gap: 5px; color: #666; }
-        .stat-item b { color: var(--text); }
 
-        /* MENU DE NAVIGATION (ONGLETS) */
         nav.main-nav {
             background: var(--white);
             border-bottom: 1px solid var(--border);
-            display: flex;
-            padding: 0 20px;
-        }
-        nav.main-nav button {
-            background: none; border: none;
-            padding: 15px 20px;
-            font-size: 0.9rem;
-            color: #555;
-            cursor: pointer;
-            border-bottom: 3px solid transparent;
-        }
-        nav.main-nav button.active {
-            border-bottom: 3px solid var(--blue-light);
-            color: var(--blue-light);
-            font-weight: bold;
+            display: flex; padding: 0 20px;
         }
 
-        /* ZONE CONTENU */
-        .container { padding: 20px; max-width: 1200px; margin: auto; }
+        nav.main-nav button {
+            background: none; border: none; padding: 15px 25px;
+            font-size: 0.85rem; color: #666; cursor: pointer;
+            border-bottom: 3px solid transparent; text-transform: uppercase;
+        }
+
+        nav.main-nav button.active {
+            border-bottom: 3px solid var(--blue-light);
+            color: var(--blue-light); font-weight: bold;
+        }
+
+        .container { padding: 20px; max-width: 1100px; margin: auto; }
 
         .card {
             background: var(--white);
             border: 1px solid var(--border);
-            border-radius: 4px;
-            margin-bottom: 20px;
-            overflow: hidden;
+            border-radius: 4px; margin-bottom: 25px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
         }
 
         .card-header {
-            background: #f9f9f9;
-            padding: 12px 20px;
+            background: #fdfdfd; padding: 12px 20px;
             border-bottom: 1px solid var(--border);
+            font-weight: bold; color: var(--blue-main); font-size: 0.9rem;
             display: flex; align-items: center; gap: 10px;
-            font-weight: bold; color: var(--blue-main);
         }
 
-        .card-body { padding: 20px; }
-
-        /* GRILLE D'ICÔNES (ACTION) */
+        /* GRILLE D'ACTIONS IMMOBILISATION */
         .action-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
-            gap: 1px;
-            background: var(--border);
-            border: 1px solid var(--border);
-            margin-top: 10px;
+            display: grid; grid-template-columns: repeat(5, 1fr);
+            gap: 1px; background: var(--border); border-top: 1px solid var(--border);
         }
         .action-item {
-            background: var(--white);
-            padding: 20px 10px;
-            text-align: center;
-            cursor: pointer;
-            transition: 0.2s;
+            background: var(--white); padding: 25px 10px; text-align: center; cursor: pointer;
         }
-        .action-item:hover { background: #f0f7ff; }
-        .action-item i { display: block; font-size: 1.5rem; margin-bottom: 8px; }
-        .action-label { font-size: 0.8rem; font-weight: bold; }
+        .action-item:hover { background: #f9f9f9; }
+        .action-item span { display: block; font-size: 1.5rem; margin-bottom: 5px; }
 
-        /* FORMULAIRE TAUX */
-        .rate-control {
-            display: flex; flex-direction: column; gap: 15px;
+        /* INTERFACE BANQUE */
+        .bank-tabs { display: flex; gap: 10px; margin-bottom: 15px; }
+        .bank-tab-btn {
+            background: #eee; border: 1px solid var(--border); padding: 8px 15px;
+            font-size: 0.75rem; cursor: pointer; border-radius: 3px;
         }
-        input[type="range"] { width: 100%; }
+        .bank-tab-btn.active { background: var(--blue-main); color: white; border-color: var(--blue-main); }
+
+        input[type="range"] { width: 100%; margin: 10px 0; }
     </style>
 </head>
 <body>
 
 <header>
-    <div style="font-weight: bold; font-size: 1.2rem; color: var(--blue-main);">GEO EMPIRE <span style="font-weight: normal; color: #999;">| Système</span></div>
-    <div class="user-profile">
-        <div style="text-align: right;">
-            <div style="font-size: 0.8rem; font-weight: bold;">UNITÉ CODEX-ALPHA</div>
-            <div style="font-size: 0.7rem; color: #27ae60;">● En ligne</div>
+    <div style="font-weight: bold; font-size: 1.1rem; color: var(--blue-main);">GEO EMPIRE <span style="color:#ccc; font-weight:normal;">| Système</span></div>
+    <div style="display:flex; align-items:center; gap:15px;">
+        <div style="text-align:right;">
+            <div style="font-size:0.75rem; font-weight:bold;">UNITÉ CODEX-ALPHA</div>
+            <div style="font-size:0.65rem; color:var(--green);">● En ligne</div>
         </div>
-        <div class="user-avatar"></div>
+        <div style="width:35px; height:35px; border-radius:50%; background:#ddd; border:1px solid #ccc;"></div>
     </div>
 </header>
 
 <div class="stats-bar">
-    <div class="stat-item">Perso: <b>1 500 €</b></div>
-    <div class="stat-item">Holding: <b>850 645 €</b></div>
-    <div class="stat-item">Position: <b>162e place</b></div>
-    <div class="stat-item">Niveau: <b style="color: var(--blue-light);">7</b></div>
+    <div>Perso: <b>1 500 €</b></div>
+    <div>Holding: <b>850 645 €</b></div>
+    <div>Position: <b>162e place</b></div>
+    <div>Niveau: <b style="color:var(--blue-light);">7</b></div>
 </div>
 
 <nav class="main-nav">
     <button>Accueil</button>
-    <button class="active">Situation</button>
+    <button class="active" onclick="showTab('situation')">Situation</button>
+    <button onclick="showTab('banque')">Banque</button>
     <button>Business</button>
     <button>Services</button>
-    <button>Informations</button>
 </nav>
 
 <div class="container">
     
-    <div class="card">
-        <div class="card-header">
-            <span style="font-size: 1.2rem;">🏢</span> ADMINISTRATION HOLDING : PULLSAR
-        </div>
-        <div class="card-body">
+    <div id="tab-situation">
+        <div class="card">
+            <div class="card-header">🏢 ADMINISTRATION HOLDING : PULLSAR</div>
             <div class="action-grid">
-                <div class="action-item"><i>🏠</i><div class="action-label">Propriétés</div></div>
-                <div class="action-item"><i>🛒</i><div class="action-label">Acheter</div></div>
-                <div class="action-item"><i>🏗️</i><div class="action-label">Travaux</div></div>
-                <div class="action-item"><i>💼</i><div class="action-label">Assurance</div></div>
-                <div class="action-item"><i>ℹ️</i><div class="action-label">Infos</div></div>
+                <div class="action-item"><span>🏠</span><div style="font-size:0.7rem; font-weight:bold;">Propriétés</div></div>
+                <div class="action-item"><span>🛒</span><div style="font-size:0.7rem; font-weight:bold;">Acheter</div></div>
+                <div class="action-item"><span>🏗️</span><div style="font-size:0.7rem; font-weight:bold;">Travaux</div></div>
+                <div class="action-item"><span>💼</span><div style="font-size:0.7rem; font-weight:bold;">Assurance</div></div>
+                <div class="action-item"><span>ℹ️</span><div style="font-size:0.7rem; font-weight:bold;">Infos</div></div>
             </div>
         </div>
     </div>
 
-    <div class="card">
-        <div class="card-header">🏦 GESTION BANCAIRE (TAUX JOUEURS)</div>
-        <div class="card-body">
-            <div class="rate-control">
-                <div>
-                    <div style="display:flex; justify-content:space-between; margin-bottom:5px;">
-                        <label>Taux d'intérêt des Prêts</label>
-                        <b id="l-val" style="color:var(--blue-light)">5.0%</b>
-                    </div>
-                    <input type="range" min="0" max="50" value="5" oninput="document.getElementById('l-val').innerText = this.value + '.0%'">
+    <div id="tab-banque" style="display:none;">
+        <div class="card">
+            <div class="card-header">🏦 CENTRE FINANCIER & BANCAIRE</div>
+            <div style="padding: 20px;">
+                <div class="bank-tabs">
+                    <button class="bank-tab-btn active">BANQUE PRIVÉE (HOLDING)</button>
+                    <button class="bank-tab-btn">BANQUE MUNICIPALE</button>
+                    <button class="bank-tab-btn">BANQUE ENTREPRISE</button>
                 </div>
-                <div>
-                    <div style="display:flex; justify-content:space-between; margin-bottom:5px;">
-                        <label>Rémunération Épargne</label>
-                        <b id="s-val" style="color:var(--blue-light)">2.0%</b>
+
+                <div style="border:1px solid var(--border); padding:20px; border-radius:4px;">
+                    <div style="display:flex; justify-content:space-between; margin-bottom:10px;">
+                        <span style="font-size:0.8rem; font-weight:bold;">Taux d'intérêt des Prêts</span>
+                        <b id="loan-val" style="color:var(--blue-light)">4.0%</b>
                     </div>
-                    <input type="range" min="0" max="15" value="2" oninput="document.getElementById('s-val').innerText = this.value + '.0%'">
+                    <input type="range" min="0" max="50" step="0.5" value="4" oninput="document.getElementById('loan-val').innerText = this.value + '.0%'">
+                    
+                    <div style="display:flex; justify-content:space-between; margin-bottom:10px; margin-top:20px;">
+                        <span style="font-size:0.8rem; font-weight:bold;">Rémunération Épargne (Livret)</span>
+                        <b id="save-val" style="color:var(--blue-light)">2.0%</b>
+                    </div>
+                    <input type="range" min="0" max="15" step="0.1" value="2" oninput="document.getElementById('save-val').innerText = this.value + '.0%'">
                 </div>
             </div>
         </div>
     </div>
 
 </div>
+
+<script>
+    function showTab(tabName) {
+        // Cacher tous les onglets
+        document.getElementById('tab-situation').style.display = 'none';
+        document.getElementById('tab-banque').style.display = 'none';
+        
+        // Retirer la classe active des boutons
+        const buttons = document.querySelectorAll('.main-nav button');
+        buttons.forEach(btn => btn.classList.remove('active'));
+
+        // Afficher l'onglet cliqué
+        document.getElementById('tab-' + tabName).style.display = 'block';
+        
+        // Activer le bouton correspondant
+        event.currentTarget.classList.add('active');
+    }
+</script>
 
 </body>
 </html>
