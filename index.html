@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>GEO EMPIRE - UNITÉ CODEX</title>
+    <title>GEO EMPIRE - SYSTÈME</title>
     <style>
         :root { 
             --neon-blue: #00d9ff; 
@@ -20,105 +20,88 @@
             overflow: hidden;
         }
 
-        /* HEADER UNITÉ CODEX */
-        .header-system {
-            padding: 20px;
+        /* HEADER FIXE : L'UNITÉ IA CODEX */
+        .header-ia {
+            padding: 15px 20px;
             display: flex;
             align-items: center;
             background: #000;
-            border-bottom: 1px solid rgba(0, 217, 255, 0.2);
+            border-bottom: 1px solid rgba(0, 217, 255, 0.3);
         }
 
-        .avatar-frame {
-            position: relative;
-            width: 85px;
-            height: 85px;
-            border: 2px solid var(--neon-blue);
-            box-shadow: 0 0 15px var(--neon-blue);
+        .ia-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: 1px solid var(--neon-blue);
+            box-shadow: 0 0 10px var(--neon-blue);
             margin-right: 15px;
-            background: #050505;
         }
 
-        .avatar-frame img {
+        /* SECTION HOLDING (PROFIL DU JOUEUR) */
+        .main-content {
+            padding: 20px;
+            height: calc(100vh - 200px);
+            overflow-y: auto;
+        }
+
+        .player-profile-card {
+            background: #0a0a0a;
+            border: 1px solid #222;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        /* PHOTO DE LA HOLDING (MODIFIABLE) */
+        .holding-photo-frame {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 15px;
+            border: 2px solid var(--gold);
+            padding: 5px;
+            background: #000;
+        }
+
+        #holding-img {
             width: 100%;
             height: 100%;
             object-fit: cover;
         }
 
-        .header-titles h2 {
-            margin: 0;
-            color: var(--neon-blue);
-            font-size: 1.2rem;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-        }
-
-        .header-titles p {
-            margin: 2px 0 0 0;
-            color: #555;
-            font-size: 0.75rem;
-        }
-
-        /* CONTENU PRINCIPAL */
-        .main-content {
-            padding: 20px;
-            height: calc(100vh - 250px);
-            overflow-y: auto;
-        }
-
         .section-title {
             color: var(--gold);
-            font-size: 1.1rem;
+            font-size: 1rem;
             margin-bottom: 20px;
             text-transform: uppercase;
-            border-left: 3px solid var(--gold);
-            padding-left: 10px;
+            letter-spacing: 1px;
         }
 
-        .console-box {
-            color: var(--cyan-text);
-            font-family: 'Courier New', monospace;
-            font-size: 0.85rem;
-            line-height: 1.6;
-            margin-bottom: 30px;
-            background: rgba(0, 217, 255, 0.05);
-            padding: 15px;
-            border-radius: 4px;
+        /* FORMULAIRE */
+        .input-group {
+            margin-bottom: 15px;
+            text-align: left;
         }
 
-        /* SÉLECTEUR DE PERSONNAGE */
-        .label-blue {
+        label {
             color: var(--neon-blue);
-            font-size: 0.75rem;
-            margin-bottom: 10px;
+            font-size: 0.7rem;
             display: block;
-            text-transform: uppercase;
+            margin-bottom: 5px;
         }
 
-        .btn-group {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 25px;
-        }
-
-        .btn-choice {
-            flex: 1;
+        input {
+            width: 100%;
+            background: #111;
+            border: 1px solid #333;
+            color: white;
             padding: 12px;
-            background: transparent;
-            border: 1px solid var(--gold);
-            color: var(--gold);
-            cursor: pointer;
-            font-weight: bold;
-            text-transform: uppercase;
-            transition: 0.3s;
+            border-radius: 4px;
+            box-sizing: border-box;
         }
 
-        .btn-choice.active {
-            background-color: var(--gold);
-            color: #000;
-        }
-
-        /* NAVIGATION BASSE */
+        /* NAV BASSE */
         nav {
             position: fixed;
             bottom: 0;
@@ -130,11 +113,11 @@
 
         nav button {
             flex: 1;
-            background: #111;
+            background: none;
             border: none;
-            color: #666;
-            padding: 18px 0;
-            font-size: 0.75rem;
+            color: #555;
+            padding: 20px 0;
+            font-size: 0.7rem;
             text-transform: uppercase;
             font-weight: bold;
         }
@@ -147,34 +130,37 @@
 </head>
 <body>
 
-<div class="header-system">
-    <div class="avatar-frame">
-        <img id="main-avatar" src="agent-femme.jpg" alt="Agent">
-    </div>
-    <div class="header-titles">
-        <h2 id="display-name">UNITÉ CODEX-ALPHA</h2>
-        <p>SCAN GPS : RAYON 5KM ACTIVÉ</p>
+<div class="header-ia">
+    <img src="agent-femme.jpg" class="ia-avatar"> <div>
+        <h2 style="margin:0; font-size: 0.9rem; color: var(--neon-blue);">UNITÉ CODEX-ALPHA</h2>
+        <p style="margin:0; font-size: 0.6rem; color: #555;">SYSTEM ONLINE</p>
     </div>
 </div>
 
 <div class="main-content">
-    <div class="section-title">DARK BLACK INTERFACE</div>
-    
-    <div class="console-box">
-        > INITIALISATION SYSTÈME...<br>
-        > AGENT CONNECTÉ : <span id="agent-type">ALPHA (FEMME)</span><br>
-        > STATUT : PRÊT POUR L'ALGORITHME
+    <div class="section-title">GESTION DE LA HOLDING</div>
+
+    <div class="player-profile-card">
+        <div class="holding-photo-frame">
+            <img id="holding-img" src="https://via.placeholder.com/150/111/gold?text=VOTRE+LOGO" alt="Holding Logo">
+        </div>
+        <h3 id="holding-name-display" style="color:var(--gold); margin:0;">MA HOLDING</h3>
     </div>
 
-    <span class="label-blue">CHOISIR VOTRE AGENT :</span>
-    <div class="btn-group">
-        <button id="btn-f" class="btn-choice active" onclick="changeAgent('femme')">Agent Femme</button>
-        <button id="btn-h" class="btn-choice" onclick="changeAgent('homme')">Agent Homme</button>
+    <div class="input-group">
+        <label>NOM DE L'EMPIRE :</label>
+        <input type="text" id="name-input" placeholder="Ex: Global Corp" oninput="updateHolding()">
     </div>
 
-    <span class="label-blue">NOM DE VOTRE HOLDING :</span>
-    <input type="text" id="name-input" oninput="updateHoldingName()" placeholder="ENTREZ UN NOM..." 
-           style="width:100%; background:#0a0a0a; border:1px solid #333; color:white; padding:15px; box-sizing:border-box;">
+    <div class="input-group">
+        <label>URL DE LA PHOTO (Logo ou Avatar) :</label>
+        <input type="text" id="photo-input" placeholder="Lien de votre image..." oninput="updateHolding()">
+    </div>
+
+    <div style="color: #4eeaff; font-family: monospace; font-size: 0.7rem; margin-top: 20px;">
+        > En attente de nouvelles acquisitions...<br>
+        > Localisation : Le Palais-sur-Vienne
+    </div>
 </div>
 
 <nav>
@@ -185,29 +171,15 @@
 </nav>
 
 <script>
-    function changeAgent(sexe) {
-        const img = document.getElementById('main-avatar');
-        const btnF = document.getElementById('btn-f');
-        const btnH = document.getElementById('btn-h');
-        const typeText = document.getElementById('agent-type');
+    function updateHolding() {
+        const nameInput = document.getElementById('name-input').value;
+        const photoInput = document.getElementById('photo-input').value;
+        
+        const nameDisplay = document.getElementById('holding-name-display');
+        const imgDisplay = document.getElementById('holding-img');
 
-        if(sexe === 'femme') {
-            img.src = 'agent-femme.jpg';
-            btnF.classList.add('active');
-            btnH.classList.remove('active');
-            typeText.innerText = "ALPHA (FEMME)";
-        } else {
-            img.src = 'agent-homme.jpg';
-            btnH.classList.add('active');
-            btnF.classList.remove('active');
-            typeText.innerText = "BETA (HOMME)";
-        }
-    }
-
-    function updateHoldingName() {
-        const input = document.getElementById('name-input');
-        const display = document.getElementById('display-name');
-        display.innerText = input.value.toUpperCase() || "UNITÉ CODEX-ALPHA";
+        if(nameInput) nameDisplay.innerText = nameInput.toUpperCase();
+        if(photoInput) imgDisplay.src = photoInput;
     }
 </script>
 
