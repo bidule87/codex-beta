@@ -3,132 +3,77 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GEO EMPIRE - SYSTÈME BANCAIRE</title>
+    <title>GEO EMPIRE - DIRECTION BANCAIRE</title>
     <style>
         :root {
-            --bg-overlay: rgba(240, 242, 245, 0.85); /* Moins opaque pour mieux voir le fond */
-            --bank-blue: #1a3a5a;
-            --gold-dark: #b8860b;
-            --border: #ccc;
+            --glass-bg: rgba(255, 255, 255, 0.92); /* Fond très clair et lumineux */
+            --bank-blue: #00509d;
+            --locked-red: #d90429;
+            --border: #ddd;
         }
 
         body { 
-            background-image: url('https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&q=80&w=1200');
+            /* Image de fond plus colorée et lumineuse */
+            background-image: url('https://images.unsplash.com/photo-1497215728101-856f4ea42174?auto=format&fit=crop&q=80&w=1200');
             background-size: cover;
             background-attachment: fixed;
-            background-position: center;
             font-family: 'Segoe UI', sans-serif;
             margin: 0; padding: 0;
-            color: #333;
         }
 
-        .overlay { background: var(--bg-overlay); min-height: 100vh; padding-bottom: 50px; }
+        .overlay { background: var(--glass-bg); min-height: 100vh; padding-bottom: 50px; }
 
-        header { background: #fff; padding: 10px 20px; border-bottom: 2px solid var(--bank-blue); display: flex; justify-content: space-between; align-items: center; }
+        header { background: #fff; padding: 15px 25px; border-bottom: 3px solid var(--bank-blue); display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
 
-        .stats-bar { background: #333; color: #fff; padding: 8px 20px; display: flex; gap: 20px; font-size: 0.8rem; }
+        .stats-bar { background: var(--bank-blue); color: #fff; padding: 10px 25px; display: flex; gap: 30px; font-size: 0.85rem; }
 
-        nav.main-nav { background: #eee; display: flex; border-bottom: 1px solid var(--border); }
-        nav.main-nav button { background: none; border: none; padding: 15px 20px; cursor: pointer; font-weight: bold; color: #666; }
-        nav.main-nav button.active { background: #fff; color: var(--bank-blue); border-top: 3px solid var(--bank-blue); }
+        .container { padding: 30px; max-width: 1100px; margin: auto; }
 
-        .container { padding: 20px; max-width: 1000px; margin: auto; }
+        /* BANQUE STYLE TABLEAU PRO */
+        .bank-panel { background: #fff; border: 1px solid var(--border); border-radius: 8px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); overflow: hidden; }
+        
+        .panel-header { background: #f8f9fa; padding: 20px; border-bottom: 2px solid #eee; display: flex; justify-content: space-between; align-items: center; }
 
-        /* DESIGN TYPE BANQUE PRO */
-        .bank-card {
-            background: #fff; border: 1px solid var(--border); border-radius: 4px; overflow: hidden;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1); margin-bottom: 20px;
+        .lock-banner {
+            background: #fff0f0; border-left: 5px solid var(--locked-red); padding: 15px;
+            color: var(--locked-red); font-weight: bold; font-size: 0.9rem; margin: 20px;
         }
 
-        .bank-header { background: var(--bank-blue); color: #fff; padding: 15px 20px; display: flex; justify-content: space-between; }
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        th { background: #f1f1f1; padding: 12px; text-align: left; font-size: 0.8rem; text-transform: uppercase; color: #666; }
+        td { padding: 15px; border-bottom: 1px solid #eee; }
 
-        .bank-content { padding: 25px; }
+        .input-tranche { padding: 8px; border: 1px solid #ccc; border-radius: 4px; width: 180px; font-family: monospace; }
+        .input-rate { padding: 8px; border: 1px solid #ccc; border-radius: 4px; width: 70px; text-align: center; font-weight: bold; }
 
-        .timer-lock {
-            background: #fff9e6; border: 1px solid #ffe58f; padding: 10px;
-            font-size: 0.75rem; color: #856404; display: flex; align-items: center; gap: 10px; margin-bottom: 20px;
+        .btn-save {
+            background: var(--bank-blue); color: white; border: none; padding: 15px 40px;
+            border-radius: 4px; cursor: pointer; font-weight: bold; float: right; margin: 20px;
+            transition: 0.3s;
         }
-
-        .rate-box {
-            border: 1px solid #eee; padding: 15px; border-radius: 4px; margin-bottom: 15px;
-            background: #fdfdfd;
-        }
-
-        .btn-confirm {
-            background: var(--bank-blue); color: white; border: none;
-            padding: 12px 25px; border-radius: 4px; cursor: pointer;
-            width: 100%; font-weight: bold; text-transform: uppercase;
-        }
-
-        .btn-confirm:disabled { background: #ccc; cursor: not-allowed; }
+        .btn-save:hover { background: #003f7d; }
     </style>
 </head>
 <body>
 
 <div class="overlay">
     <header>
-        <div style="font-weight: bold; color: var(--bank-blue);">GEO EMPIRE <span style="font-weight: normal; color: #999;">| GESTION BANCAIRE</span></div>
-        <div style="display:flex; align-items:center; gap:10px; font-size:0.8rem;">
-            <b>PULLSAR HOLDING</b>
-            <div style="width:30px; height:30px; border-radius:50%; background:#2c3e50;"></div>
-        </div>
+        <div style="font-weight: bold; font-size: 1.3rem; color: var(--bank-blue);">GEO EMPIRE <span style="font-weight: normal; color: #999;">| GESTION DES TAUX</span></div>
+        <div style="font-size: 0.9rem;">Banquier : <b>UNITÉ CODEX-ALPHA</b></div>
     </header>
 
     <div class="stats-bar">
-        <span>Capital: <b>850 645 €</b></span>
-        <span>Liquidités: <b>152 000 €</b></span>
-        <span>Statut: <b style="color:#4eeaff;">ACTIONNAIRE MAJORITAIRE</b></span>
+        <span>Capital de la Banque: <b>2 338,82 X Ø</b></span>
+        <span>Liquidités: <b>860,28 N Ø</b></span>
+        <span>Rang Mondial: <b>68e place</b></span>
     </div>
-
-    <nav class="main-nav">
-        <button onclick="location.reload()">SITUATION</button>
-        <button class="active">BANQUE PRIVÉE</button>
-        <button>BANQUE MUNICIPALE</button>
-        <button>MARCHÉ PUBLIC</button>
-    </nav>
 
     <div class="container">
-        
-        <div class="bank-card">
-            <div class="bank-header">
-                <span>CONTRÔLE DES TAUX - BANQUE PRIVÉE #04</span>
-                <small>PROPRIÉTAIRE : PULLSAR</small>
+        <div class="bank-panel">
+            <div class="panel-header">
+                <h2 style="margin:0; font-size: 1.1rem; color: var(--bank-blue);">CONFIGURATION DES TRANCHES D'EMPRUNT</h2>
+                <span style="background: #e7f3ff; color: #00509d; padding: 5px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: bold;">MODIFICATION HEBDOMADAIRE</span>
             </div>
-            
-            <div class="bank-content">
-                <div class="timer-lock">
-                    <span>⚠️</span>
-                    <div>
-                        <b>RÈGLE DE STABILITÉ ÉCONOMIQUE :</b><br>
-                        Une fois validés, les taux sont bloqués pour 7 jours. Prochaine modification possible le : <b>20 Février 2026</b>.
-                    </div>
-                </div>
 
-                <div class="rate-box">
-                    <div style="display:flex; justify-content:space-between; margin-bottom:10px;">
-                        <label><b>Taux de Prêt Clientèle</b></label>
-                        <b id="val1" style="color:var(--bank-blue); font-size:1.2rem;">4.5%</b>
-                    </div>
-                    <input type="range" min="0.5" max="25" step="0.1" value="4.5" style="width:100%;" oninput="document.getElementById('val1').innerText = this.value + '%'">
-                </div>
-
-                <div class="rate-box">
-                    <div style="display:flex; justify-content:space-between; margin-bottom:10px;">
-                        <label><b>Rémunération Livret A</b></label>
-                        <b id="val2" style="color:var(--bank-blue); font-size:1.2rem;">1.8%</b>
-                    </div>
-                    <input type="range" min="0.1" max="10" step="0.1" value="1.8" style="width:100%;" oninput="document.getElementById('val2').innerText = this.value + '%'">
-                </div>
-
-                <button class="btn-confirm" onclick="alert('Taux verrouillés pour 1 semaine !')">Valider et Verrouiller les Taux</button>
-            </div>
-        </div>
-
-        <div style="text-align: center; color: #666; font-size: 0.7rem; font-style: italic;">
-            Note : Les taux de la Banque Municipale sont gérés par le Bureau du Maire élu.
-        </div>
-    </div>
-</div>
-
-</body>
-</html>
+            <div class="lock-banner">
+                🔒 ÉTAT : VERROUILLÉ. Toute modification sera
