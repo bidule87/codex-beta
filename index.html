@@ -1,79 +1,138 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <title>GEO EMPIRE - DIRECTION GÉNÉRALE</title>
-    <style>
-        :root { --primary: #003366; --accent: #007bff; --white: rgba(255, 255, 255, 0.96); }
-        body {
-            margin: 0; padding: 0;
-            background: url('https://images.unsplash.com/photo-1542744173-8e7e53415bb0?auto=format&fit=crop&q=80&w=1600') no-repeat center center fixed;
-            background-size: cover; font-family: 'Segoe UI', sans-serif;
-        }
-        .glass-panel {
-            background: var(--white); width: 90%; max-width: 1100px;
-            margin: 40px auto; border-radius: 12px; box-shadow: 0 20px 50px rgba(0,0,0,0.5);
-            overflow: hidden; border: 1px solid rgba(255,255,255,0.4);
-        }
-        header { background: var(--primary); color: white; padding: 20px 30px; display: flex; justify-content: space-between; align-items: center; }
-        .content { padding: 30px; height: 75vh; overflow-y: auto; }
-        .section-bank { margin-bottom: 40px; }
-        h2 { color: var(--primary); border-bottom: 2px solid var(--primary); padding-bottom: 10px; font-size: 1.1rem; }
-        table { width: 100%; border-collapse: collapse; margin-top: 15px; background: #fff; }
-        th { background: #f8f9fa; padding: 12px; text-align: left; font-size: 0.75rem; color: #666; text-transform: uppercase; }
-        td { padding: 10px; border-bottom: 1px solid #eee; }
-        input { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; font-family: monospace; font-weight: bold; }
-        .btn-add { background: #f1f3f5; color: var(--primary); border: 1px dashed var(--primary); padding: 10px; width: 100%; cursor: pointer; border-radius: 4px; font-weight: bold; margin-top: 10px; }
-        .btn-val { background: var(--primary); color: white; border: none; padding: 15px 40px; border-radius: 4px; cursor: pointer; font-weight: bold; float: right; margin: 20px; }
-    </style>
-</head>
-<body>
+<div class="geo-empire-screen">
+    <div class="glass-interface">
+        <header>
+            <div class="top-header">
+                <span class="logo">🏛️ GEO EMPIRE | <small>DIRECTION GÉNÉRALE</small></span>
+                <span class="banquier-id">Banquier : <strong>UNITÉ CODEX-ALPHA</strong></span>
+            </div>
+            <div class="stats-bar">
+                <span>RÉSERVES : 2 338,82 X Ø</span>
+                <span>FLUX : +1.2%</span>
+                <span class="status-active">● DIRECTION OPÉRATIONNELLE</span>
+            </div>
+        </header>
 
-<div class="glass-panel">
-    <header>
-        <div><strong>GEO EMPIRE</strong> | DIRECTION FINANCIÈRE</div>
-        <div style="font-size: 0.8rem;">Banquier : <strong>UNITÉ CODEX-ALPHA</strong></div>
-    </header>
+        <div class="scroll-zone">
+            <p class="warning-alert">⚠️ <strong>SÉCURITÉ :</strong> Toute modification sera verrouillée pendant 7 jours réels.</p>
 
-    <div class="content">
-        <div style="background: #fff9db; padding: 15px; border-radius: 5px; color: #856404; font-size: 0.85rem; margin-bottom: 20px;">
-            ⚠️ <strong>RÈGLE D'OR :</strong> Les taux configurés ci-dessous seront verrouillés pendant <strong>7 jours</strong> après validation.
+            <section class="bank-section">
+                <h3>📊 TRANCHES D'EMPRUNTS (PRÊTS)</h3>
+                <table id="loanTable">
+                    <thead>
+                        <tr><th>Palier (Ø)</th><th style="width:120px;">Taux (%)</th><th style="width:30px;"></th></tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><input type="text" value="0 Ø"></td>
+                            <td><input type="text" value="6.50%" class="rate-val"></td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <button class="add-btn" onclick="add('loanTable')">+ Ajouter une tranche</button>
+            </section>
+
+            <section class="bank-section">
+                <h3>💰 LES LIVRETS (RÉMUNÉRATION)</h3>
+                <table id="saveTable">
+                    <thead>
+                        <tr><th>Palier (Ø)</th><th style="width:120px;">Taux (%)</th><th style="width:30px;"></th></tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><input type="text" value="0 Ø"></td>
+                            <td><input type="text" value="2.30%" class="rate-val"></td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <button class="add-btn" onclick="add('saveTable')">+ Ajouter une tranche</button>
+            </section>
+
+            <section class="bank-section">
+                <h3>💎 COMPTES ÉPARGNE LONG TERME</h3>
+                <table id="longTable">
+                    <thead>
+                        <tr><th>Palier (Ø)</th><th style="width:120px;">Taux (%)</th><th style="width:30px;"></th></tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><input type="text" value="0 Ø"></td>
+                            <td><input type="text" value="4.10%" class="rate-val"></td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <button class="add-btn" onclick="add('longTable')">+ Ajouter une tranche</button>
+            </section>
         </div>
 
-        <div class="section-bank">
-            <h2>📑 TRANCHES D'EMPRUNTS (PRÊTS)</h2>
-            <table id="t-loan">
-                <thead><tr><th>Montant (À partir de)</th><th style="width:200px;">Taux (%)</th><th style="width:50px;"></th></tr></thead>
-                <tbody>
-                    <tr><td><input type="text" value="0 Ø"></td><td><input type="text" value="0.01%" style="color:var(--accent)"></td><td></td></tr>
-                    <tr><td><input type="text" value="10 000 000 Ø"></td><td><input type="text" value="5.00%" style="color:var(--accent)"></td><td><button onclick="this.parentElement.parentElement.remove()" style="color:red; border:none; background:none; cursor:pointer;">X</button></td></tr>
-                </tbody>
-            </table>
-            <button class="btn-add" onclick="addRow('t-loan')">+ Ajouter un palier d'emprunt</button>
-        </div>
-
-        <div class="section-bank">
-            <h2>💰 LES LIVRETS I (RÉMUNÉRATION)</h2>
-            <table id="t-sav">
-                <thead><tr><th>Montant (À partir de)</th><th style="width:200px;">Taux (%)</th><th style="width:50px;"></th></tr></thead>
-                <tbody>
-                    <tr><td><input type="text" value="0 Ø"></td><td><input type="text" value="100.00%" style="color:var(--accent)"></td><td></td></tr>
-                </tbody>
-            </table>
-            <button class="btn-add" onclick="addRow('t-sav')">+ Ajouter un palier livret</button>
-        </div>
+        <footer>
+            <button class="btn-lock" onclick="alert('🔒 SYSTÈME VERROUILLÉ : Taux enregistrés.')">VALIDER ET BLOQUER</button>
+        </footer>
     </div>
-
-    <button class="btn-val" onclick="alert('🔒 Politique monétaire verrouillée pour 7 jours !')">VALIDER ET BLOQUER</button>
 </div>
 
+<style>
+    body, html { margin: 0; padding: 0; height: 100vh; width: 100vw; font-family: 'Segoe UI', sans-serif; overflow: hidden; }
+
+    .geo-empire-screen {
+        /* IMAGE DE FOND : Bureau de nuit avec vue panoramique sur la mer et la ville */
+        background: url('https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=2000') center/cover no-repeat;
+        height: 100vh;
+        width: 100vw;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        position: fixed;
+    }
+
+    .glass-interface {
+        background: rgba(255, 255, 255, 0.98);
+        width: 90%;
+        max-width: 850px;
+        height: 85vh;
+        border-radius: 12px;
+        box-shadow: 0 40px 100px rgba(0,0,0,0.6);
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        border: 1px solid white;
+    }
+
+    header { background: #002b5c; color: white; }
+    .top-header { padding: 15px 25px; display: flex; justify-content: space-between; align-items: center; }
+    .logo { font-weight: bold; font-size: 1.1rem; }
+    .stats-bar { background: #f1f3f5; color: #333; padding: 10px 25px; font-size: 0.8rem; font-weight: bold; display: flex; gap: 30px; border-bottom: 1px solid #ddd; }
+    .status-active { color: #27ae60; margin-left: auto; }
+
+    .scroll-zone { padding: 25px; flex: 1; overflow-y: auto; background: white; }
+    .warning-alert { background: #fff9db; border: 1px solid #ffe066; padding: 12px; border-radius: 4px; color: #856404; font-size: 0.85rem; margin-bottom: 25px; text-align: center; }
+
+    .bank-section { margin-bottom: 30px; border-bottom: 1px solid #eee; padding-bottom: 15px; }
+    h3 { color: #002b5c; font-size: 0.95rem; border-left: 5px solid #002b5c; padding-left: 12px; margin-bottom: 15px; }
+
+    table { width: 100%; border-collapse: collapse; }
+    th { text-align: left; font-size: 0.75rem; color: #888; text-transform: uppercase; padding-bottom: 10px; }
+    td { padding: 8px 0; }
+
+    input { width: 95%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; font-size: 1rem; }
+    .rate-val { color: #007bff; font-weight: bold; text-align: right; }
+
+    .add-btn { width: 100%; padding: 10px; margin-top: 10px; background: none; border: 1px dashed #002b5c; color: #002b5c; font-weight: bold; cursor: pointer; border-radius: 4px; }
+
+    footer { padding: 20px; background: white; border-top: 1px solid #eee; }
+    .btn-lock { width: 100%; padding: 18px; background: #002b5c; color: white; border: none; font-size: 1.1rem; font-weight: bold; cursor: pointer; border-radius: 6px; }
+</style>
+
 <script>
-    function addRow(id) {
-        let t = document.getElementById(id).getElementsByTagName('tbody')[0];
-        let r = t.insertRow();
-        r.innerHTML = '<td><input type="text" placeholder="Entrez montant..."></td><td><input type="text" placeholder="0.00%" style="color:var(--accent)"></td><td><button onclick="this.parentElement.parentElement.remove()" style="color:red; border:none; background:none; cursor:pointer;">X</button></td>';
+    function add(id) {
+        const table = document.getElementById(id).getElementsByTagName('tbody')[0];
+        const row = table.insertRow();
+        row.innerHTML = `
+            <td><input type="text" placeholder="Ø..."></td>
+            <td><input type="text" placeholder="0.00%" class="rate-val"></td>
+            <td><button onclick="this.parentElement.parentElement.remove()" style="color:red; border:none; background:none; cursor:pointer; font-weight:bold; font-size:1.2rem;">×</button></td>
+        `;
     }
 </script>
-
-</body>
-</html>
