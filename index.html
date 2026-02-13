@@ -3,50 +3,40 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>GEO EMPIRE - CODEX V3</title>
+    <title>GEO EMPIRE - CODEX PRO</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <style>
         :root { --blue: #00d9ff; --gold: #d4af37; --red: #ff4d4d; --black: #000; --panel: #0a0a0a; }
         body { background: var(--black); color: #fff; font-family: 'Courier New', monospace; margin: 0; overflow: hidden; }
 
-        /* HEADER UNITÉ CODEX-ALPHA (D'APRÈS TA CAPTURE) */
+        /* HEADER UNITÉ CODEX-ALPHA */
         .header { background: #000; padding: 15px; display: flex; align-items: center; border-bottom: 2px solid var(--blue); height: 90px; box-sizing: border-box; }
         .avatar-container { position: relative; width: 65px; height: 65px; margin-right: 15px; }
         .avatar-img { width: 100%; height: 100%; border-radius: 50%; border: 2px solid var(--blue); box-shadow: 0 0 15px var(--blue); object-fit: cover; background: #111; }
-        .header-text h2 { margin: 0; font-size: 0.95rem; color: var(--blue); text-transform: uppercase; letter-spacing: 1px; }
+        .header-text h2 { margin: 0; font-size: 0.95rem; color: var(--blue); text-transform: uppercase; }
         .header-text p { margin: 0; font-size: 0.65rem; color: #888; }
 
-        /* NAVIGATION PAR ONGLETS */
+        /* NAVIGATION */
         nav { display: flex; background: #050505; border-bottom: 1px solid #222; overflow-x: auto; }
-        nav button { flex: 1; padding: 14px; border: none; background: none; color: #555; font-size: 0.65rem; text-transform: uppercase; font-weight: bold; cursor: pointer; min-width: 90px; transition: 0.3s; }
+        nav button { flex: 1; padding: 14px; border: none; background: none; color: #555; font-size: 0.65rem; text-transform: uppercase; font-weight: bold; cursor: pointer; min-width: 90px; }
         nav button.active { color: var(--blue); border-bottom: 2px solid var(--blue); background: #111; }
 
-        /* CONTENUS */
         .tab-content { display: none; height: calc(100vh - 195px); overflow-y: auto; padding: 15px; box-sizing: border-box; }
         .tab-content.active { display: block; }
 
-        /* RADAR SATELLITE GHOST */
         #map { width: 100%; height: 35vh; background: #000; }
         .leaflet-tile-pane { filter: brightness(0.2) invert(1) contrast(3) hue-rotate(180deg); }
 
-        /* SYSTÈME DE CARTES (HOLDING / ENTREPRISES) */
         .card { background: var(--panel); border: 1px solid #222; padding: 15px; border-radius: 4px; margin-bottom: 15px; border-left: 4px solid var(--blue); }
-        .card-gold { border-left-color: var(--gold); }
-        h3 { margin: 0 0 10px 0; font-size: 0.8rem; color: var(--blue); border-bottom: 1px solid #222; padding-bottom: 5px; }
+        input { background: #000; border: 1px solid #333; color: #fff; padding: 12px; width: 100%; border-radius: 4px; box-sizing: border-box; margin: 10px 0; }
         
-        input { background: #000; border: 1px solid #333; color: #fff; padding: 12px; width: 100%; border-radius: 4px; box-sizing: border-box; margin: 10px 0; outline: none; }
-        input:focus { border-color: var(--blue); }
-        
-        /* CONSOLE ALGORITHME */
-        #console { background: #020202; color: #00ff00; font-family: 'Courier', monospace; font-size: 0.7rem; padding: 12px; height: 100px; overflow-y: auto; border: 1px solid #111; line-height: 1.4; }
+        #console { background: #020202; color: #00ff00; font-family: 'Courier', monospace; font-size: 0.7rem; padding: 12px; height: 100px; overflow-y: auto; border: 1px solid #111; }
 
-        .btn-action { width: 100%; padding: 16px; border: none; border-radius: 4px; font-weight: bold; text-transform: uppercase; cursor: pointer; margin-top: 10px; transition: 0.2s; }
+        .btn-action { width: 100%; padding: 16px; border: none; border-radius: 4px; font-weight: bold; text-transform: uppercase; cursor: pointer; margin-top: 10px; }
         .btn-blue { background: var(--blue); color: #000; }
         .btn-gold { background: var(--gold); color: #000; }
-        .btn-action:active { transform: scale(0.98); opacity: 0.8; }
 
-        /* BARRE DE STATS FIXE */
-        .footer-bar { position: fixed; bottom: 0; width: 100%; background: #000; padding: 15px; border-top: 2px solid var(--blue); display: flex; justify-content: space-around; font-size: 0.9rem; font-weight: bold; z-index: 1000; }
+        .footer-bar { position: fixed; bottom: 0; width: 100%; background: #000; padding: 15px; border-top: 2px solid var(--blue); display: flex; justify-content: space-around; font-size: 0.9rem; font-weight: bold; }
     </style>
 </head>
 <body>
@@ -57,13 +47,13 @@
     </div>
     <div class="header-text">
         <h2 id="holding-name-header">UNITÉ CODEX-ALPHA</h2>
-        <p>SCAN GPS : <span style="color:var(--gold)">RAYON 5KM</span></p>
+        <p>SCAN : <span id="scan-range" style="color:var(--gold)">RAYON 5KM</span></p>
     </div>
-    <div id="clock" style="margin-left: auto; color: var(--gold); font-weight: bold;">00:00:00</div>
+    <div id="clock" style="margin-left: auto; color: var(--gold);">00:00:00</div>
 </div>
 
 <nav>
-    <button onclick="openTab('map-tab')" class="active">Radar</button>
+    <button onclick="openTab('map-tab')" id="btn-radar" class="active">Radar</button>
     <button onclick="openTab('holding-tab')">Holding</button>
     <button onclick="openTab('ent-tab')">Entreprises</button>
     <button onclick="openTab('mairie-tab')">Mairie</button>
@@ -73,79 +63,125 @@
 <div id="map-tab" class="tab-content active" style="padding:0;">
     <div id="map"></div>
     <div style="padding:15px;">
-        <div id="console">> SCANNER GPS ACTIF...<br>> LOCALISATION : LE PALAIS-SUR-VIENNE</div>
+        <div id="console">> SYSTÈME EN ATTENTE...</div>
         <button class="btn-action btn-blue" onclick="demarrerAlgorithme()">DÉCRYPTAGE ALGORITHME</button>
     </div>
 </div>
 
 <div id="holding-tab" class="tab-content">
     <div class="card">
-        <h3>CONFIGURER L'IDENTITÉ</h3>
-        <label style="font-size: 0.6rem; color:var(--blue)">NOM DE LA HOLDING</label>
-        <input type="text" id="h-name-input" value="UNITÉ CODEX-ALPHA" oninput="saveConfig()">
-        <label style="font-size: 0.6rem; color:var(--blue)">URL PHOTO PROFIL</label>
-        <input type="text" id="h-photo-input" placeholder="Lien vers une image (PNG/JPG)..." oninput="saveConfig()">
+        <h3>IDENTITÉ DE L'EMPIRE</h3>
+        <input type="text" id="h-name-input" placeholder="NOM DE LA HOLDING" oninput="saveAndSync()">
+        <input type="text" id="h-photo-input" placeholder="URL PHOTO PROFIL" oninput="saveAndSync()">
     </div>
-    <div class="card card-gold">
-        <h3>BILAN FINANCIER HOLDING</h3>
-        <p>PATRIMOINE BRUT : <span id="patrimoine-val" style="color:var(--gold)">0</span> Ø</p>
-        <p>LIMITE DÉCOUVERT (50%) : <span id="decouvert-val" style="color:var(--red)">0</span> Ø</p>
-        <div id="alert-banqueroute" style="font-size: 0.6rem; text-align: center; margin-top: 10px;">STATUT : SOLDE OPÉRATIONNEL</div>
+    <div class="card" style="border-left-color: var(--gold);">
+        <h3>BILAN FINANCIER</h3>
+        <p>PATRIMOINE : <span id="patrimoine-val" style="color:var(--gold)">0</span> Ø</p>
+        <p>LIMITE DÉCOUVERT : <span id="decouvert-val" style="color:var(--red)">0</span> Ø</p>
     </div>
 </div>
 
 <div id="ent-tab" class="tab-content">
-    <h3>FILIALES SOUS CONTRÔLE</h3>
-    <div id="ent-list">
-        <p style="color:#333; text-align:center; margin-top:30px;">Aucune filiale détectée. Utilisez le Radar.</p>
-    </div>
+    <h3>FILIALES RÉELLES</h3>
+    <div id="ent-list"></div>
 </div>
 
 <div id="mairie-tab" class="tab-content">
     <div class="card">
-        <h3>HÔTEL DE VILLE</h3>
-        <p>TAXE FONCIÈRE : 2.0% / CYCLE</p>
-        <p>EMPLACEMENT : LE PALAIS SUR VIENNE</p>
+        <h3>MAIRIE DE : <span id="city-name">SCAN...</span></h3>
+        <p>IMPÔTS FONCIERS : 2% / JOUR</p>
         <button class="btn-action btn-gold">S'ACQUITTER DES TAXES</button>
     </div>
 </div>
 
 <div id="rules-tab" class="tab-content">
     <div class="card">
-        <h3>PROTOCOLE GEO EMPIRE V3</h3>
-        <div style="font-size:0.75rem; line-height:1.6; color:#aaa;">
-            - <span style="color:var(--blue)">CYCLE :</span> Toutes les transactions sont validées à minuit.<br>
-            - <span style="color:var(--blue)">ALGORITHME :</span> Chaque achat nécessite un crackage de code.<br>
-            - <span style="color:var(--blue)">FINANCES :</span> Le cash ne peut pas descendre sous 50% de la valeur totale de vos biens.<br>
-            - <span style="color:var(--blue)">GPS :</span> Rayon d'action limité à 5km autour de votre position réelle.
-        </div>
+        <h3>PROTOCOLE (PDF P.23)</h3>
+        <p>NIVEAU : <span id="current-level" style="color:var(--blue)">1</span></p>
+        <p>PROCHAIN NIVEAU : <span id="next-level-req">50 000</span> Ø</p>
     </div>
 </div>
 
 <div class="footer-bar">
     <div style="color:var(--gold)">CASH: <span id="cash-val">10 000</span> Ø</div>
-    <div style="color:var(--blue)">NIVEAU: 1</div>
+    <div style="color:var(--blue)">LVL: <span id="footer-lvl">1</span></div>
 </div>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
-    // --- VARIABLES GLOBALES (LOGIQUE PDF P.23) ---
-    let cash = 10000;
-    let patrimoine = 0;
-    let filiales = [];
-    const TAUX_DECOUVERT = 0.50;
+    // --- ÉTAT DU JEU ---
+    let gameState = {
+        cash: 10000,
+        patrimoine: 0,
+        level: 1,
+        holdingName: "UNITÉ CODEX-ALPHA",
+        holdingPhoto: "https://api.dicebear.com/7.x/avataaars/svg?seed=CodexAlpha",
+        entreprises: []
+    };
 
-    // --- INITIALISATION MAP ---
-    var map = L.map('map', {zoomControl: false}).setView([45.858, 1.305], 16);
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
-
-    function log(msg) {
-        const c = document.getElementById('console');
-        c.innerHTML = "> " + msg + "<br>" + c.innerHTML;
-        c.scrollTop = 0;
+    // --- CHARGEMENT ---
+    function init() {
+        const saved = localStorage.getItem('geoEmpireSave');
+        if (saved) gameState = JSON.parse(saved);
+        updateUI();
+        renderEntreprises();
     }
 
-    // --- GESTION DES ONGLETS ---
+    function save() {
+        localStorage.setItem('geoEmpireSave', JSON.stringify(gameState));
+    }
+
+    function updateUI() {
+        document.getElementById('holding-name-header').innerText = gameState.holdingName;
+        document.getElementById('main-avatar').src = gameState.holdingPhoto;
+        document.getElementById('h-name-input').value = gameState.holdingName;
+        document.getElementById('h-photo-input').value = gameState.holdingPhoto;
+        
+        document.getElementById('cash-val').innerText = gameState.cash.toLocaleString();
+        document.getElementById('patrimoine-val').innerText = gameState.patrimoine.toLocaleString();
+        document.getElementById('decouvert-val').innerText = (-(gameState.patrimoine * 0.5)).toLocaleString();
+        
+        // Calcul du Niveau (Niv 1 = 0, Niv 2 = 50k, etc.)
+        gameState.level = Math.floor(gameState.patrimoine / 50000) + 1;
+        document.getElementById('footer-lvl').innerText = gameState.level;
+        document.getElementById('current-level').innerText = gameState.level;
+        document.getElementById('next-level-req').innerText = (gameState.level * 50000).toLocaleString();
+    }
+
+    function saveAndSync() {
+        gameState.holdingName = document.getElementById('h-name-input').value;
+        gameState.holdingPhoto = document.getElementById('h-photo-input').value;
+        save();
+        updateUI();
+    }
+
+    // --- ALGORITHME DE CADENAS ---
+    function demarrerAlgorithme() {
+        const logBox = document.getElementById('console');
+        logBox.innerHTML = "> INTRUSION ALGORITHMIQUE...";
+        
+        setTimeout(() => {
+            let res = prompt("CRACKAGE RÉUSSI. NOM DE L'ENTREPRISE ?");
+            if(res) {
+                gameState.entreprises.push({id: Date.now(), nom: res, val: 5000});
+                gameState.patrimoine += 5000;
+                logBox.innerHTML = "> CIBLE ACQUISE : " + res;
+                save();
+                updateUI();
+                renderEntreprises();
+            }
+        }, 1000);
+    }
+
+    function renderEntreprises() {
+        const list = document.getElementById('ent-list');
+        list.innerHTML = gameState.entreprises.length ? "" : "<p style='text-align:center;color:#444'>Aucune filiale.</p>";
+        gameState.entreprises.forEach((ent, i) => {
+            list.innerHTML += `<div class="card"><h3>${ent.nom}</h3><p style="font-size:0.6rem">VALEUR : ${ent.val} Ø</p></div>`;
+        });
+    }
+
+    // --- ONGLETS ---
     function openTab(id) {
         document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
         document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
@@ -154,77 +190,15 @@
         if(id === 'map-tab') setTimeout(() => map.invalidateSize(), 200);
     }
 
-    // --- PERSONNALISATION ---
-    function saveConfig() {
-        const name = document.getElementById('h-name-input').value;
-        const photo = document.getElementById('h-photo-input').value;
-        document.getElementById('holding-name-header').innerText = name || "GEO EMPIRE";
-        if(photo) document.getElementById('main-avatar').src = photo;
-    }
+    // --- MAP ---
+    var map = L.map('map', {zoomControl: false}).setView([45.858, 1.305], 16);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
 
-    // --- ALGORITHME DE CADENAS (CRACKAGE) ---
-    function demarrerAlgorithme() {
-        log("TENTATIVE D'INTRUSION ALGORITHMIQUE...");
-        setTimeout(() => {
-            let codeSecret = Math.floor(1000 + Math.random() * 9000);
-            let nomEntreprise = prompt("ALGO CRACKÉ (CODE " + codeSecret + ")\nENTREZ LE NOM DE LA FILIALE :");
-            
-            if(nomEntreprise) {
-                filiales.push({id: codeSecret, nom: nomEntreprise, img: ""});
-                patrimoine += 5000; // Valeur fixe par achat
-                log("ACQUISITION RÉUSSIE : " + nomEntreprise);
-                updateStats();
-                renderEntreprises();
-            }
-        }, 1500);
-    }
-
-    function renderEntreprises() {
-        const list = document.getElementById('ent-list');
-        list.innerHTML = "";
-        filiales.forEach((f, i) => {
-            list.innerHTML += `
-                <div class="card card-gold">
-                    <input type="text" value="${f.nom}" oninput="filiales[${i}].nom = this.value">
-                    <p style="font-size:0.6rem; color:var(--blue)">ID CRYPTOGRAPHIQUE : ${f.id}</p>
-                    <button class="btn-action" style="background:#111; color:var(--gold); font-size:0.6rem; padding:5px;" onclick="changerLogo(${i})">CHANGER PHOTO FILIALE</button>
-                </div>`;
-        });
-    }
-
-    function changerLogo(i) {
-        let url = prompt("URL DE L'IMAGE POUR " + filiales[i].nom);
-        if(url) filiales[i].img = url;
-    }
-
-    // --- LOGIQUE FINANCIÈRE (PDF PAGE 23) ---
-    function updateStats() {
-        document.getElementById('cash-val').innerText = cash.toLocaleString();
-        document.getElementById('patrimoine-val').innerText = patrimoine.toLocaleString();
-        
-        let limite = -(patrimoine * TAUX_DECOUVERT);
-        document.getElementById('decouvert-val').innerText = limite.toLocaleString();
-
-        if(cash < limite) {
-            document.getElementById('alert-banqueroute').innerText = "LIQUIDATION FORCÉE : DÉPASSEMENT 50%";
-            document.getElementById('alert-banqueroute').style.color = "var(--red)";
-            log("ALERTE : BANQUEROUTE IMMINENTE");
-        }
-    }
-
-    // --- RÈGLE DE MINUIT ---
     setInterval(() => {
-        let d = new Date();
-        document.getElementById('clock').innerText = d.toLocaleTimeString();
-        
-        if(d.getHours() === 0 && d.getMinutes() === 0 && d.getSeconds() === 0) {
-            log("CYCLE DE MINUIT : PRÉLÈVEMENT DES TAXES FONCIÈRES...");
-            cash -= (patrimoine * 0.02); // 2% de taxe par jour
-            updateStats();
-        }
+        document.getElementById('clock').innerText = new Date().toLocaleTimeString();
     }, 1000);
 
-    map.locate({setView: true, maxZoom: 16});
+    init();
 </script>
 </body>
 </html>
