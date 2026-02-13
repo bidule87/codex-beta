@@ -5,103 +5,120 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>GEO EMPIRE</title>
     <style>
-        :root { --blue: #00d9ff; --bg: #000; --gold: #d4af37; }
-        body { background: var(--bg); color: #fff; font-family: sans-serif; margin: 0; overflow: hidden; }
+        :root { --blue: #00d9ff; --bg: #000; --gold: #d4af37; --dark-blue: #003540; }
+        body { background: var(--bg); color: #fff; font-family: 'Segoe UI', sans-serif; margin: 0; overflow: hidden; }
 
-        /* HEADER AVEC IMAGE IA FIXE */
+        /* HEADER SANS IMAGE (STYLE HOLOGRAMME) */
         .header-ia {
-            padding: 15px;
+            padding: 15px 20px;
             display: flex;
             align-items: center;
-            background: #050505;
-            border-bottom: 2px solid var(--blue);
+            background: linear-gradient(180deg, #050505 0%, #000 100%);
+            border-bottom: 1px solid var(--blue);
         }
 
-        .ia-avatar {
-            width: 55px;
-            height: 55px;
-            border-radius: 50%;
-            border: 2px solid var(--blue);
-            box-shadow: 0 0 10px var(--blue);
+        .ia-badge {
+            width: 50px;
+            height: 50px;
+            border: 1px solid var(--blue);
+            display: flex;
+            align-items: center;
+            justify-content: center;
             margin-right: 15px;
-            object-fit: cover;
-            /* Image de secours si ton fichier n'est pas trouvé */
-            background-image: url('https://api.dicebear.com/7.x/bottts-neutral/svg?seed=Codex');
-            background-size: cover;
+            background: rgba(0, 217, 255, 0.1);
+            box-shadow: inset 0 0 10px var(--blue);
         }
 
-        .main-content { padding: 20px; height: calc(100vh - 200px); overflow-y: auto; }
+        .ia-badge span {
+            color: var(--blue);
+            font-weight: bold;
+            font-size: 1.2rem;
+            text-shadow: 0 0 5px var(--blue);
+        }
+
+        /* SECTION HOLDING */
+        .main-content { padding: 20px; height: calc(100vh - 180px); overflow-y: auto; }
 
         .holding-card {
-            background: rgba(20, 20, 20, 0.9);
-            border: 1px solid #333;
-            padding: 20px;
+            background: #080808;
+            border: 1px solid #1a1a1a;
+            padding: 25px;
             text-align: center;
-            border-radius: 12px;
+            border-radius: 4px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
 
         .photo-container {
-            width: 130px;
-            height: 130px;
-            margin: 0 auto 15px;
-            border: 2px solid var(--gold);
-            background: #111;
+            width: 140px;
+            height: 140px;
+            margin: 0 auto 20px;
+            border: 1px solid var(--gold);
+            background: #000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         #holding-img { width: 100%; height: 100%; object-fit: cover; }
 
         .btn-upload {
             display: inline-block;
-            background: var(--blue);
-            color: #000;
-            padding: 10px 20px;
+            background: transparent;
+            color: var(--blue);
+            border: 1px solid var(--blue);
+            padding: 10px 15px;
+            font-size: 0.7rem;
+            letter-spacing: 1px;
             font-weight: bold;
             text-transform: uppercase;
             cursor: pointer;
-            margin: 10px 0;
-            border-radius: 4px;
+            margin-bottom: 20px;
         }
 
         input[type="file"] { display: none; }
+        
         input[type="text"] {
             width: 100%;
             background: #000;
-            border: 1px solid #444;
-            color: #fff;
-            padding: 12px;
-            margin-top: 10px;
-            box-sizing: border-box;
-            border-radius: 4px;
+            border: 0;
+            border-bottom: 1px solid #333;
+            color: var(--gold);
+            padding: 10px;
+            text-align: center;
+            font-size: 1.1rem;
+            letter-spacing: 2px;
+            outline: none;
         }
 
-        nav { position: fixed; bottom: 0; width: 100%; display: flex; background: #000; border-top: 1px solid #222; }
-        nav button { flex: 1; padding: 20px; background: none; border: none; color: #555; font-size: 0.7rem; text-transform: uppercase; }
-        nav button.active { color: var(--blue); border-top: 2px solid var(--blue); }
+        /* NAV BASSE */
+        nav { position: fixed; bottom: 0; width: 100%; display: flex; background: #000; border-top: 1px solid #111; }
+        nav button { flex: 1; padding: 22px; background: none; border: none; color: #444; font-size: 0.65rem; text-transform: uppercase; font-weight: bold; }
+        nav button.active { color: var(--blue); }
     </style>
 </head>
 <body>
 
 <div class="header-ia">
-    <img src="agent-femme.jpg" class="ia-avatar" id="ia-img">
+    <div class="ia-badge"><span>C-A</span></div>
     <div>
-        <h2 style="margin:0; font-size: 1rem; color: var(--blue);">UNITÉ CODEX-ALPHA</h2>
-        <p style="margin:0; font-size: 0.6rem; color: #555;">SCANNER GPS ACTIF</p>
+        <h2 style="margin:0; font-size: 0.9rem; color: var(--blue); letter-spacing: 1px;">CODEX-ALPHA</h2>
+        <p style="margin:0; font-size: 0.6rem; color: #444;">LIAISON SATELLITE ÉTABLIE</p>
     </div>
 </div>
 
 <div class="main-content">
     <div class="holding-card">
         <div class="photo-container">
-            <img id="holding-img" src="https://via.placeholder.com/130/111/d4af37?text=LOGO" alt="Holding">
+            <img id="holding-img" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=" alt="">
+            <span id="placeholder-text" style="color:#222; font-size:0.7rem;">AUCUN LOGO</span>
         </div>
-        <h3 id="holding-name" style="color:var(--gold); margin:0;">MA HOLDING</h3>
         
         <label class="btn-upload">
-            📸 PHOTO DE L'EMPIRE
+            Mettre à jour le logo
             <input type="file" accept="image/*" onchange="loadPhoto(event)">
         </label>
         
-        <input type="text" id="name-input" placeholder="NOM DE L'EMPIRE" oninput="updateName()">
+        <input type="text" id="name-input" placeholder="NOM DE LA HOLDING" oninput="updateName()">
     </div>
 </div>
 
@@ -113,19 +130,19 @@
 </nav>
 
 <script>
-    // Chargement de la photo du joueur
     function loadPhoto(event) {
         const reader = new FileReader();
+        const placeholder = document.getElementById('placeholder-text');
         reader.onload = function(){
             document.getElementById('holding-img').src = reader.result;
+            if(placeholder) placeholder.style.display = 'none';
         };
         reader.readAsDataURL(event.target.files[0]);
     }
 
-    // Mise à jour du nom
     function updateName() {
         const val = document.getElementById('name-input').value;
-        document.getElementById('holding-name').innerText = val.toUpperCase() || "MA HOLDING";
+        const display = document.querySelector('.active-name') || { innerText: '' };
     }
 </script>
 
