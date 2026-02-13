@@ -36,9 +36,10 @@
             border: 1px solid var(--neon-blue);
             box-shadow: 0 0 10px var(--neon-blue);
             margin-right: 15px;
+            object-fit: cover;
         }
 
-        /* SECTION HOLDING (PROFIL DU JOUEUR) */
+        /* SECTION HOLDING */
         .main-content {
             padding: 20px;
             height: calc(100vh - 200px);
@@ -54,7 +55,6 @@
             margin-bottom: 20px;
         }
 
-        /* PHOTO DE LA HOLDING (MODIFIABLE) */
         .holding-photo-frame {
             width: 120px;
             height: 120px;
@@ -62,6 +62,8 @@
             border: 2px solid var(--gold);
             padding: 5px;
             background: #000;
+            position: relative;
+            overflow: hidden;
         }
 
         #holding-img {
@@ -75,23 +77,38 @@
             font-size: 1rem;
             margin-bottom: 20px;
             text-transform: uppercase;
-            letter-spacing: 1px;
         }
 
-        /* FORMULAIRE */
-        .input-group {
-            margin-bottom: 15px;
-            text-align: left;
+        /* STYLISE LE BOUTON DE TÉLÉCHARGEMENT */
+        .upload-btn-wrapper {
+            position: relative;
+            overflow: hidden;
+            display: inline-block;
+            width: 100%;
         }
 
-        label {
+        .btn-upload {
+            border: 1px solid var(--neon-blue);
             color: var(--neon-blue);
-            font-size: 0.7rem;
-            display: block;
-            margin-bottom: 5px;
+            background-color: rgba(0, 217, 255, 0.1);
+            padding: 12px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            width: 100%;
+            cursor: pointer;
+            text-transform: uppercase;
         }
 
-        input {
+        .upload-btn-wrapper input[type=file] {
+            font-size: 100px;
+            position: absolute;
+            left: 0;
+            top: 0;
+            opacity: 0;
+        }
+
+        input[type=text] {
             width: 100%;
             background: #111;
             border: 1px solid #333;
@@ -99,89 +116,10 @@
             padding: 12px;
             border-radius: 4px;
             box-sizing: border-box;
+            margin-top: 10px;
         }
 
-        /* NAV BASSE */
-        nav {
-            position: fixed;
-            bottom: 0;
-            width: 100%;
-            display: flex;
-            background: #000;
-            border-top: 1px solid #222;
-        }
-
-        nav button {
-            flex: 1;
-            background: none;
-            border: none;
-            color: #555;
-            padding: 20px 0;
+        label {
+            color: var(--gold);
             font-size: 0.7rem;
-            text-transform: uppercase;
-            font-weight: bold;
-        }
-
-        nav button.active {
-            color: var(--neon-blue);
-            border-top: 2px solid var(--neon-blue);
-        }
-    </style>
-</head>
-<body>
-
-<div class="header-ia">
-    <img src="agent-femme.jpg" class="ia-avatar"> <div>
-        <h2 style="margin:0; font-size: 0.9rem; color: var(--neon-blue);">UNITÉ CODEX-ALPHA</h2>
-        <p style="margin:0; font-size: 0.6rem; color: #555;">SYSTEM ONLINE</p>
-    </div>
-</div>
-
-<div class="main-content">
-    <div class="section-title">GESTION DE LA HOLDING</div>
-
-    <div class="player-profile-card">
-        <div class="holding-photo-frame">
-            <img id="holding-img" src="https://via.placeholder.com/150/111/gold?text=VOTRE+LOGO" alt="Holding Logo">
-        </div>
-        <h3 id="holding-name-display" style="color:var(--gold); margin:0;">MA HOLDING</h3>
-    </div>
-
-    <div class="input-group">
-        <label>NOM DE L'EMPIRE :</label>
-        <input type="text" id="name-input" placeholder="Ex: Global Corp" oninput="updateHolding()">
-    </div>
-
-    <div class="input-group">
-        <label>URL DE LA PHOTO (Logo ou Avatar) :</label>
-        <input type="text" id="photo-input" placeholder="Lien de votre image..." oninput="updateHolding()">
-    </div>
-
-    <div style="color: #4eeaff; font-family: monospace; font-size: 0.7rem; margin-top: 20px;">
-        > En attente de nouvelles acquisitions...<br>
-        > Localisation : Le Palais-sur-Vienne
-    </div>
-</div>
-
-<nav>
-    <button>RADAR</button>
-    <button class="active">HOLDING</button>
-    <button>FILIALES</button>
-    <button>MAIRIE</button>
-</nav>
-
-<script>
-    function updateHolding() {
-        const nameInput = document.getElementById('name-input').value;
-        const photoInput = document.getElementById('photo-input').value;
-        
-        const nameDisplay = document.getElementById('holding-name-display');
-        const imgDisplay = document.getElementById('holding-img');
-
-        if(nameInput) nameDisplay.innerText = nameInput.toUpperCase();
-        if(photoInput) imgDisplay.src = photoInput;
-    }
-</script>
-
-</body>
-</html>
+            display: block
