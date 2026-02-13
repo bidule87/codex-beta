@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>GEO EMPIRE - CODEX ALPHA</title>
+    <title>GEO EMPIRE - UNITÉ CODEX</title>
     <style>
         :root { 
             --neon-blue: #00d9ff; 
@@ -20,12 +20,13 @@
             overflow: hidden;
         }
 
-        /* HEADER STYLE CAPTURE */
+        /* HEADER UNITÉ CODEX */
         .header-system {
             padding: 20px;
             display: flex;
             align-items: center;
             background: #000;
+            border-bottom: 1px solid rgba(0, 217, 255, 0.2);
         }
 
         .avatar-frame {
@@ -58,10 +59,11 @@
             font-size: 0.75rem;
         }
 
-        /* SECTION DARK BLACK TITLE */
-        .main-display {
+        /* CONTENU PRINCIPAL */
+        .main-content {
             padding: 20px;
             height: calc(100vh - 250px);
+            overflow-y: auto;
         }
 
         .section-title {
@@ -69,81 +71,77 @@
             font-size: 1.1rem;
             margin-bottom: 20px;
             text-transform: uppercase;
-            border-left: 2px solid var(--gold);
+            border-left: 3px solid var(--gold);
             padding-left: 10px;
         }
 
         .console-box {
             color: var(--cyan-text);
             font-family: 'Courier New', monospace;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             line-height: 1.6;
             margin-bottom: 30px;
+            background: rgba(0, 217, 255, 0.05);
+            padding: 15px;
+            border-radius: 4px;
         }
 
-        /* BOUTONS SELECTION */
-        .selection-label {
+        /* SÉLECTEUR DE PERSONNAGE */
+        .label-blue {
             color: var(--neon-blue);
             font-size: 0.75rem;
             margin-bottom: 10px;
             display: block;
+            text-transform: uppercase;
         }
 
-        .gender-selector {
+        .btn-group {
             display: flex;
-            width: 100%;
-            margin-bottom: 30px;
+            gap: 10px;
+            margin-bottom: 25px;
         }
 
-        .btn-gender {
+        .btn-choice {
             flex: 1;
             padding: 12px;
             background: transparent;
             border: 1px solid var(--gold);
-            color: #000;
-            background-color: var(--gold);
+            color: var(--gold);
             cursor: pointer;
             font-weight: bold;
             text-transform: uppercase;
+            transition: 0.3s;
         }
 
-        .btn-gender.inactive {
-            background-color: transparent;
-            color: var(--gold);
+        .btn-choice.active {
+            background-color: var(--gold);
+            color: #000;
         }
 
-        /* INPUT NOM */
-        .name-input {
-            width: 100%;
-            background: #0a0a0a;
-            border: 1px solid #222;
-            color: #555;
-            padding: 15px;
-            font-size: 0.9rem;
-        }
-
-        /* NAV BASSE */
+        /* NAVIGATION BASSE */
         nav {
             position: fixed;
             bottom: 0;
             width: 100%;
             display: flex;
             background: #000;
+            border-top: 1px solid #222;
         }
 
         nav button {
             flex: 1;
-            background: #1a1a1a;
-            border: 1px solid #222;
-            color: #888;
-            padding: 15px 0;
-            font-size: 0.8rem;
+            background: #111;
+            border: none;
+            color: #666;
+            padding: 18px 0;
+            font-size: 0.75rem;
             text-transform: uppercase;
+            font-weight: bold;
         }
 
         nav button.active {
-            border-bottom: 2px solid var(--neon-blue);
             color: var(--neon-blue);
+            border-top: 2px solid var(--neon-blue);
         }
     </style>
 </head>
@@ -154,29 +152,29 @@
         <img id="main-avatar" src="agent-femme.jpg" alt="Agent">
     </div>
     <div class="header-titles">
-        <h2 id="holding-name">UNITÉ CODEX-ALPHA</h2>
-        <p>SCAN GPS : RAYON 5KM</p>
+        <h2 id="display-name">UNITÉ CODEX-ALPHA</h2>
+        <p>SCAN GPS : RAYON 5KM ACTIVÉ</p>
     </div>
 </div>
 
-<div class="main-display">
-    <div class="section-title">DARK BLACK TITLE</div>
+<div class="main-content">
+    <div class="section-title">DARK BLACK INTERFACE</div>
     
     <div class="console-box">
-        > Dondest phocx.ure:<br>
-        > Consool: ACTIF<br>
-        > B111E CAOK Of FEM<br>
-        > SYSTÈME PRÊT POUR L'ALGORITHME.
+        > INITIALISATION SYSTÈME...<br>
+        > AGENT CONNECTÉ : <span id="agent-type">ALPHA (FEMME)</span><br>
+        > STATUT : PRÊT POUR L'ALGORITHME
     </div>
 
-    <span class="selection-label">SÉLECTION DU PERSONNAGE :</span>
-    <div class="gender-selector">
-        <button id="btn-f" class="btn-gender" onclick="selectGender('femme')">AGENT FEMME</button>
-        <button id="btn-h" class="btn-gender inactive" onclick="selectGender('homme')">AGENT HOMME</button>
+    <span class="label-blue">CHOISIR VOTRE AGENT :</span>
+    <div class="btn-group">
+        <button id="btn-f" class="btn-choice active" onclick="changeAgent('femme')">Agent Femme</button>
+        <button id="btn-h" class="btn-choice" onclick="changeAgent('homme')">Agent Homme</button>
     </div>
 
-    <span class="selection-label">NOM DE LA HOLDING :</span>
-    <input type="text" class="name-input" placeholder="GEO EMPIRE" oninput="document.getElementById('holding-name').innerText = this.value.toUpperCase() || 'UNITÉ CODEX-ALPHA'">
+    <span class="label-blue">NOM DE VOTRE HOLDING :</span>
+    <input type="text" id="name-input" oninput="updateHoldingName()" placeholder="ENTREZ UN NOM..." 
+           style="width:100%; background:#0a0a0a; border:1px solid #333; color:white; padding:15px; box-sizing:border-box;">
 </div>
 
 <nav>
@@ -187,20 +185,29 @@
 </nav>
 
 <script>
-    function selectGender(type) {
+    function changeAgent(sexe) {
         const img = document.getElementById('main-avatar');
         const btnF = document.getElementById('btn-f');
         const btnH = document.getElementById('btn-h');
+        const typeText = document.getElementById('agent-type');
 
-        if(type === 'femme') {
+        if(sexe === 'femme') {
             img.src = 'agent-femme.jpg';
-            btnF.classList.remove('inactive');
-            btnH.classList.add('inactive');
+            btnF.classList.add('active');
+            btnH.classList.remove('active');
+            typeText.innerText = "ALPHA (FEMME)";
         } else {
             img.src = 'agent-homme.jpg';
-            btnH.classList.remove('inactive');
-            btnF.classList.add('inactive');
+            btnH.classList.add('active');
+            btnF.classList.remove('active');
+            typeText.innerText = "BETA (HOMME)";
         }
+    }
+
+    function updateHoldingName() {
+        const input = document.getElementById('name-input');
+        const display = document.getElementById('display-name');
+        display.innerText = input.value.toUpperCase() || "UNITÉ CODEX-ALPHA";
     }
 </script>
 
