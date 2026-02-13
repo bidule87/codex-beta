@@ -3,122 +3,171 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>CODEX CORE SYSTEM</title>
+    <title>GEO EMPIRE - CODEX DARK</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <style>
-        :root { --neon-blue: #00d9ff; --gold: #f1c40f; --dark: #050505; }
-        body { background: #000; color: #fff; font-family: 'Courier New', monospace; margin: 0; overflow: hidden; }
+        :root { --blue: #00d9ff; --gold: #d4af37; --red: #ff4d4d; --black: #000000; --dark-grey: #0a0a0a; }
+        body { background: var(--black); color: #fff; font-family: 'Courier New', monospace; margin: 0; overflow: hidden; }
         
-        /* L'IA CODEX - TA PHOTO */
-        .header { background: #0a0a0a; padding: 15px; display: flex; align-items: center; border-bottom: 3px solid var(--neon-blue); box-shadow: 0 0 20px rgba(0,217,255,0.2); }
-        .avatar-frame { width: 60px; height: 60px; border-radius: 50%; border: 2px solid var(--neon-blue); overflow: hidden; margin-right: 15px; background: #111; }
-        .avatar-frame img { width: 100%; height: 100%; object-fit: cover; }
-
-        /* CARTE SATELLITE CODEX */
-        #map { width: 100%; height: 45vh; background: #000; }
-        .leaflet-tile-pane { filter: brightness(0.4) invert(1) contrast(3) hue-rotate(180deg); }
-
-        /* DASHBOARD DE GESTION */
-        .dashboard { padding: 20px; background: #000; height: 55vh; display: flex; flex-direction: column; gap: 12px; }
-        .capital-card { background: var(--dark); border: 1px solid #222; padding: 15px; text-align: center; border-radius: 4px; border-left: 4px solid var(--gold); }
-        .money { font-size: 2.5rem; color: var(--gold); font-weight: bold; }
+        /* HEADER AVEC TON UNITÉ CODEX */
+        .header { background: var(--black); padding: 15px; display: flex; align-items: center; border-bottom: 2px solid var(--blue); box-shadow: 0 0 15px var(--blue); }
+        .avatar-codex { width: 60px; height: 60px; border-radius: 50%; border: 2px solid var(--blue); margin-right: 15px; overflow: hidden; background: #111; }
+        .avatar-codex img { width: 100%; height: 100%; object-fit: cover; }
         
-        .btn-buy { width: 100%; padding: 20px; border: none; background: var(--neon-blue); color: #000; font-weight: bold; cursor: pointer; text-transform: uppercase; font-size: 1.1rem; border-radius: 4px; transition: 0.2s; }
-        .btn-buy:active { transform: scale(0.98); background: #fff; }
+        /* RADAR GPS */
+        #map { width: 100%; height: 40vh; background: #000; }
+        .leaflet-tile-pane { filter: brightness(0.3) invert(1) contrast(3) hue-rotate(180deg); }
 
-        #console { background: #020202; border: 1px solid #111; padding: 10px; font-size: 0.75rem; color: #00ff00; height: 100px; overflow-y: auto; border-radius: 4px; }
+        /* DASHBOARD - REGLES PDF */
+        .ui { padding: 15px; background: var(--black); height: 60vh; display: flex; flex-direction: column; gap: 10px; border-top: 1px solid #222; overflow-y: auto; }
+        
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .card { background: var(--dark-grey); border: 1px solid #222; padding: 10px; border-radius: 4px; position: relative; }
+        .label { font-size: 0.6rem; color: #888; text-transform: uppercase; }
+        .value { font-size: 1.2rem; font-weight: bold; display: block; }
+        .gold { color: var(--gold); }
+        
+        /* CONSOLE LOGS */
+        #console { background: #020202; border-left: 3px solid var(--blue); padding: 8px; font-size: 0.7rem; color: #00ff00; height: 70px; overflow-y: auto; margin-bottom: 5px; }
+
+        /* BOUTONS ACTIONS */
+        .actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .btn { padding: 15px; border: none; font-weight: bold; cursor: pointer; text-transform: uppercase; border-radius: 4px; font-size: 0.8rem; }
+        .btn-buy { background: var(--blue); color: #000; }
+        .btn-sell { background: transparent; border: 1px solid var(--red); color: var(--red); }
+        
+        .timer { font-size: 0.8rem; color: var(--gold); text-align: right; margin-bottom: 5px; }
     </style>
 </head>
 <body>
 
 <div class="header">
-    <div class="avatar-frame">
-        <img src="https://i.ibb.co/Lzf7P8Q/avatar-ai.jpg" alt="IA">
+    <div class="avatar-codex">
+        <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Codex" alt="IA">
     </div>
-    <div>
-        <div style="color: var(--neon-blue); font-weight: bold; letter-spacing: 1px;">CODEX OPERATIVE</div>
-        <div id="status" style="font-size: 0.6rem; color: #888;">LIAISON SATELLITE...</div>
+    <div style="flex-grow:1;">
+        <div style="color: var(--blue); font-weight: bold;">CODEX UNIT v1.0</div>
+        <div id="gps-status" style="font-size: 0.6rem; color: #555;">SCANNER SATELLITE...</div>
     </div>
+    <div class="timer" id="clock">00:00:00</div>
 </div>
 
 <div id="map"></div>
 
-<div class="dashboard">
-    <div class="capital-card">
-        <div style="font-size: 0.7rem; color: #666; margin-bottom: 5px;">CAPITAL DISPONIBLE</div>
-        <div id="cash" class="money">10 000 Ø</div>
-        <div id="income" style="font-size: 0.7rem; color: #2ecc71; margin-top: 5px;">REVENU PASSIF: 0 Ø/sec</div>
+<div class="ui">
+    <div id="console">> Initialisation du système...<br>> Chargement des règles PDF...</div>
+
+    <div class="stats-grid">
+        <div class="card" style="grid-column: span 2;">
+            <span class="label">Trésorerie Holding (Cash)</span>
+            <span id="cash" class="value gold">10 000 Ø</span>
+        </div>
+        <div class="card">
+            <span class="label">Patrimoine Brut</span>
+            <span id="patrimoine" class="value">0 Ø</span>
+        </div>
+        <div class="card">
+            <span class="label">Limite Découvert (50%)</span>
+            <span id="limite" class="value" style="color: var(--red);">0 Ø</span>
+        </div>
     </div>
 
-    <div id="console">> SYSTÈME CODEX INITIALISÉ.<br>> SCAN DES SECTEURS EN COURS...</div>
-
-    <button class="btn-buy" onclick="acquireZone()">ACQUÉRIR CE SECTEUR</button>
+    <div class="actions">
+        <button class="btn btn-buy" onclick="ordreAchat()">ACHETER (5 km)</button>
+        <button class="btn btn-sell" onclick="ordreVente()">ORDRE VENTE</button>
+    </div>
+    
+    <div style="font-size: 0.6rem; color: #444; text-align: center;">
+        REVENUS ET TRANSACTIONS EFFECTUÉS À MINUIT (RÈGLE PAGE 2 PDF)
+    </div>
 </div>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
+    // --- DATA INITIALE (MEMOIRE PDF) ---
     let cash = 10000;
-    let income = 0;
-    
-    // Initialisation Map
-    var map = L.map('map', {zoomControl: false}).setView([45.858, 1.305], 16);
+    let patrimoine = 0;
+    let ordresEnAttente = [];
+    const TAUX_DECOUVERT = 0.50; // 50% selon PDF
+
+    // Initialisation Map Dark
+    var map = L.map('map', {zoomControl: false}).setView([45.858, 1.305], 15);
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
 
-    function log(m) {
+    function log(msg) {
         const c = document.getElementById('console');
-        c.innerHTML = "> " + m + "<br>" + c.innerHTML;
-        c.scrollTop = 0;
+        c.innerHTML = "> " + msg + "<br>" + c.innerHTML;
     }
 
-    // GÉOLOCALISATION
+    // HORLOGE TEMPS REEL (PAGE 23 PDF)
+    function updateClock() {
+        let now = new Date();
+        let h = now.getHours();
+        let m = now.getMinutes();
+        let s = now.getSeconds();
+        document.getElementById('clock').innerText = 
+            (h<10?'0':'')+h+":"+(m<10?'0':'')+m+":"+(s<10?'0':'')+s;
+        
+        // Règle de Minuit
+        if(h === 0 && m === 0 && s === 0) {
+            traiterTransfertMinuit();
+        }
+    }
+    setInterval(updateClock, 1000);
+
+    // GPS & ENTREPRISES REELLES
     function startGPS() {
-        log("Tentative de verrouillage satellite...");
-        map.locate({setView: true, maxZoom: 17});
+        map.locate({setView: true, maxZoom: 16});
     }
-
     map.on('locationfound', function(e) {
-        log("Localisation réussie : Le Palais-sur-Vienne.");
-        document.getElementById('status').innerText = "RADAR ACTIF - SECTEUR VERROUILLÉ";
-        L.circle(e.latlng, {radius: 25, color: '#00d9ff', fillOpacity: 0.4}).addTo(map);
+        log("GPS OK. Rayon 5km activé.");
+        document.getElementById('gps-status').innerText = "RADAR ACTIF - LE PALAIS SUR VIENNE";
+        L.circle(e.latlng, {radius: 50, color: '#00d9ff'}).addTo(map);
+        
+        // Simuler entreprises réelles détectées
+        log("Cibles détectées : Mairie, Pharmacie, Poste.");
     });
 
-    // MÉCANIQUE D'ACHAT
-    function acquireZone() {
+    // MECANIQUE ACHAT (PDF PAGE 2)
+    function ordreAchat() {
         if(cash >= 5000) {
-            cash -= 5000;
-            income += 200; // Chaque bâtiment rapporte 200 par cycle
-            let currentPos = map.getCenter();
-            
-            // Marqueur Entreprise Codex
-            L.circleMarker(currentPos, {
-                radius: 12,
-                color: '#00d9ff',
-                fillOpacity: 1,
-                weight: 3
-            }).addTo(map).bindPopup("<b>ENTREPRISE CODEX</b><br>Génère 200Ø / 5s").openPopup();
-            
-            updateUI();
-            log("Acquisition confirmée. Revenu passif mis à jour.");
+            let pos = map.getCenter();
+            ordresEnAttente.push({type: 'ACHAT', pos: pos, prix: 5000});
+            log("ORDRE D'ACHAT ENREGISTRÉ. Validation à Minuit.");
+            L.circleMarker(pos, {radius: 10, color: '#d4af37'}).addTo(map)
+             .bindPopup("Achat en attente de minuit...");
         } else {
-            log("ERREUR : Fonds insuffisants pour cet achat.");
+            log("CASH INSUFFISANT.");
         }
     }
 
-    // BOUCLE DE REVENU (Toutes les 5 secondes)
-    setInterval(() => {
-        if(income > 0) {
-            cash += income;
-            updateUI();
-            log("Réception revenus : +" + income + " Ø");
+    // MECANIQUE MINUIT (PDF PAGE 22-23)
+    function traiterTransfertMinuit() {
+        log("00:00 - TRAITEMENT DU BILAN JOURNALIER...");
+        ordresEnAttente.forEach(ordre => {
+            if(ordre.type === 'ACHAT') {
+                cash -= ordre.prix;
+                patrimoine += ordre.prix;
+            }
+        });
+        ordresEnAttente = [];
+        updateUI();
+        verifierBanqueroute();
+    }
+
+    function verifierBanqueroute() {
+        let limite = -(patrimoine * TAUX_DECOUVERT);
+        if(cash < limite) {
+            log("ALERTE : LIQUIDATION FORCÉE (DECOUVERT > 50%)");
         }
-    }, 5000);
+    }
 
     function updateUI() {
         document.getElementById('cash').innerText = cash.toLocaleString() + " Ø";
-        document.getElementById('income').innerText = "REVENU PASSIF: " + income + " Ø/5sec";
+        document.getElementById('patrimoine').innerText = patrimoine.toLocaleString() + " Ø";
+        document.getElementById('limite').innerText = (-(patrimoine * 0.5)).toLocaleString() + " Ø";
     }
 
-    // Lancer le GPS dès l'ouverture
     setTimeout(startGPS, 1000);
 </script>
 </body>
