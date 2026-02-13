@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CODEX - BÊTA PRIVILÈGE</title>
+    <style>
+        body { background: #000; color: #fff; font-family: 'Courier New', monospace; margin: 0; padding: 20px; display: flex; justify-content: center; }
+        .console { border: 2px solid #3498db; width: 100%; max-width: 400px; padding: 20px; box-shadow: 0 0 20px rgba(52, 152, 219, 0.2); }
+        .header { display: flex; align-items: center; gap: 15px; border-bottom: 1px solid #111; padding-bottom: 15px; }
+        .avatar { width: 50px; height: 50px; border-radius: 50%; border: 2px solid #3498db; background: url('https://i.imgur.com/your-ai-image.jpg') center/cover; } /* Remplace par ton lien d'image */
+        .stats { margin: 20px 0; background: #050505; border: 1px solid #333; padding: 15px; }
+        .btn { width: 100%; padding: 12px; margin-top: 10px; border: none; cursor: pointer; font-weight: bold; font-family: 'Courier New'; }
+        .btn-buy { background: #3498db; color: #000; }
+        .btn-rob { background: #e74c3c; color: #fff; }
+        .log { font-size: 0.7rem; color: #2ecc71; margin-top: 15px; height: 60px; overflow-y: auto; border-top: 1px solid #111; padding-top: 10px; }
+    </style>
+</head>
+<body>
+
+<div class="console">
+    <div class="header">
+        <div class="avatar" style="background-color: #001529; border: 2px solid #3498db; position: relative;">
+            <div style="position: absolute; width: 8px; height: 8px; background: #00fbff; border-radius: 50%; top: 15px; left: 12px; box-shadow: 0 0 10px #00fbff;"></div>
+            <div style="position: absolute; width: 8px; height: 8px; background: #00fbff; border-radius: 50%; top: 15px; right: 12px; box-shadow: 0 0 10px #00fbff;"></div>
+        </div>
+        <div>
+            <p style="margin: 0; font-size: 0.8rem; color: #3498db;">GEMINI_OS (BÊTA)</p>
+            <p id="ai-msg" style="margin: 0; font-size: 0.6rem; color: #888;">"Bonjour Joueur Privilégié. Prêt ?"</p>
+        </div>
+    </div>
+
+    <div class="stats">
+        <p style="margin: 0; font-size: 0.7rem; color: #888;">SOLDE PERSONNEL :</p>
+        <p id="cash" style="font-size: 1.5rem; margin: 5px 0; color: #f1c40f;">10 000 Ø</p>
+        <p id="debt-info" style="margin: 0; font-size: 0.6rem; color: #555;">DÉCOUVERT MAX : -5 000 Ø</p>
+    </div>
+
+    <button class="btn btn-buy" onclick="buyAsset()">ACHETER COMMERCE (10 000 Ø)</button>
+    <button class="btn btn-rob" onclick="attemptRobbery()">BRAQUER UN PNJ</button>
+
+    <div id="logs" class="log">> Système initialisé...<br>> En attente d'ordres...</div>
+</div>
+
+<script>
+    let cash = localStorage.getItem('codex_cash') ? parseInt(localStorage.getItem('codex_cash')) : 10000;
+    let assets = localStorage.getItem('codex_assets') ? parseInt(localStorage.getItem('codex_assets')) : 0;
+
+    function updateUI() {
+        document.getElementById('cash').innerText = cash.toLocaleString() + " Ø";
+        localStorage.setItem('codex_cash', cash);
+        localStorage.setItem('codex_assets', assets);
+    }
+
+    function addLog(msg) {
+        const logDiv = document.getElementById('logs');
+        logDiv.innerHTML = "> " + msg + "<br>" + logDiv.innerHTML;
+    }
+
+    function buyAsset() {
+        if (cash >= 10000 || (cash - 10000 >= -(assets * 0.5 + 5000))) {
+            cash -= 10000;
+            assets += 10000;
+            updateUI();
+            addLog("Achat réussi ! Patrimoine augmenté.");
+        } else {
+            addLog("ERREUR : Fonds insuffisants.");
+        }
+    }
+
+    function attemptRobbery() {
+        if (Math.random() > 0.5) {
+            let gain = Math.floor(Math.random() * 2000) + 500;
+            cash += gain;
+            addLog("BRAQUAGE RÉUSSI ! +" + gain + " Ø");
+        } else {
+            let loss = 1000;
+            cash -= loss;
+            addLog("ÉCHEC ! Amende de 1 000 Ø");
+        }
+        updateUI();
+    }
+
+    updateUI();
+</script>
+
+</body>
+</html>
