@@ -3,96 +3,129 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CODEX SYSTEM - GEOLOC</title>
+    <title>CODEX - SYSTEM ALPHA</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <style>
         body { background: #000; color: #fff; font-family: 'Courier New', monospace; margin: 0; overflow: hidden; }
-        .header { background: #0a0a0a; padding: 10px; display: flex; align-items: center; border-bottom: 2px solid #00d9ff; position: relative; z-index: 1000; }
-        .avatar-img { width: 60px; height: 60px; border-radius: 50%; border: 2px solid #00d9ff; object-fit: cover; }
-        #map { width: 100%; height: 50vh; background: #000; }
-        .leaflet-tile-pane { filter: brightness(0.5) invert(1) contrast(2) hue-rotate(180deg); }
-        .ui-panel { padding: 15px; background: #000; height: 40vh; display: flex; flex-direction: column; gap: 10px; }
-        .stat-row { display: flex; justify-content: space-between; background: #111; padding: 10px; border: 1px solid #222; }
-        .money { color: #f1c40f; font-weight: bold; font-size: 1.2rem; }
-        .btn-group { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-        .btn { padding: 15px; border: none; font-weight: bold; cursor: pointer; text-transform: uppercase; }
+        .header { background: #0a0a0a; padding: 10px; display: flex; align-items: center; border-bottom: 2px solid #00d9ff; z-index: 1000; position: relative; }
+        
+        /* PHOTO IA FORCEE */
+        .avatar-box { width: 60px; height: 60px; border-radius: 50%; border: 2px solid #00d9ff; overflow: hidden; background: #111; margin-right: 15px; }
+        .avatar-box img { width: 100%; height: 100%; object-fit: cover; }
+
+        /* CARTE DARK MAP */
+        #map { width: 100%; height: 50vh; background: #050505; }
+        .leaflet-tile-pane { filter: brightness(0.4) invert(1) contrast(3) hue-rotate(190deg); }
+
+        /* INTERFACE */
+        .panel { padding: 15px; background: #000; height: 45vh; display: flex; flex-direction: column; gap: 10px; border-top: 1px solid #333; }
+        .money-display { font-size: 1.8rem; color: #f1c40f; font-weight: bold; text-align: center; background: #111; padding: 10px; border: 1px solid #222; }
+        
+        .actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .btn { padding: 15px; border: none; font-weight: bold; cursor: pointer; text-transform: uppercase; border-radius: 4px; }
         .btn-buy { background: #00d9ff; color: #000; }
         .btn-rob { background: #ff4d4d; color: #fff; }
-        #logs { font-size: 0.7rem; color: #2ecc71; height: 60px; overflow-y: auto; background: #050505; padding: 5px; border: 1px solid #222; }
+        .btn-gps { background: #222; color: #fff; grid-column: span 2; font-size: 0.7rem; }
+
+        #logs { font-size: 0.7rem; color: #00ff00; height: 80px; overflow-y: auto; background: #050505; padding: 10px; border: 1px solid #222; border-radius: 4px; }
     </style>
 </head>
 <body>
 
 <div class="header">
-    <img src="https://i.ibb.co/Lzf7P8Q/avatar-ai.jpg" class="avatar-img"> <div style="margin-left: 15px;">
-        <div style="color: #00d9ff; font-weight: bold; font-size: 0.9rem;">CODEX OS v4.0</div>
-        <div style="font-size: 0.6rem; color: #888;">GEOLOCALISATION ACTIVE</div>
+    <div class="avatar-box">
+        <img src="https://api.dicebear.com/7.x/bottts/svg?seed=CodexAI&backgroundColor=00d9ff" alt="AI">
+    </div>
+    <div>
+        <div style="color: #00d9ff; font-weight: bold;">UNITÉ CODEX-BÊTA</div>
+        <div id="status" style="font-size: 0.6rem; color: #888;">SCAN SATELLITE EN COURS...</div>
     </div>
 </div>
 
 <div id="map"></div>
 
-<div class="ui-panel">
-    <div class="stat-row">
-        <span>CAPITAL DISPONIBLE:</span>
-        <span id="cash" class="money">10 000 Ø</span>
-    </div>
+<div class="panel">
+    <div class="money-display" id="cash">10 000 Ø</div>
+    
+    <div id="logs">> Système initialisé...</div>
 
-    <div id="logs">> En attente de scan satellite...</div>
-
-    <div class="btn-group">
-        <button class="btn btn-buy" onclick="buyBusiness()">ACHETER ICI</button>
-        <button class="btn btn-rob" onclick="robTarget()">BRAQUER</button>
+    <div class="actions">
+        <button class="btn btn-buy" onclick="buyBiz()">ACHETER ICI</button>
+        <button class="btn btn-rob" onclick="robPNJ()">BRAQUER CIBLE</button>
+        <button class="btn btn-gps" onclick="forceGPS()">ACTIVER LOCALISATION GPS</button>
     </div>
-    <button class="btn" style="background: #333; color: white;" onclick="locateMe()">RE-CENTRER GPS</button>
 </div>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
-    // Initialisation Map
-    var map = L.map('map').setView([45.5017, -73.5673], 15);
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
-
+    // Config de base
     let cash = 10000;
-    let businessIcon = L.divIcon({className: 'my-div-icon', html: '<div style="background:#00d9ff; width:12px; height:12px; border-radius:50%; border:2px solid white; box-shadow: 0 0 10px #00d9ff;"></div>'});
+    var map = L.map('map').setView([48.8566, 2.3522], 14); // Par défaut Paris
+    
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
 
     function addLog(msg) {
         const l = document.getElementById('logs');
         l.innerHTML = "> " + msg + "<br>" + l.innerHTML;
+        l.scrollTop = 0;
     }
 
-    // Géolocalisation réelle
-    function locateMe() {
+    // FONCTION GPS
+    function forceGPS() {
+        addLog("Recherche signal GPS...");
         map.locate({setView: true, maxZoom: 16});
     }
 
     map.on('locationfound', function(e) {
-        L.marker(e.latlng).addTo(map).bindPopup("VOUS ETES ICI").openPopup();
-        addLog("Position GPS verrouillée.");
+        addLog("GPS VERROUILLÉ.");
+        L.circle(e.latlng, {radius: 200, color: '#00d9ff'}).addTo(map).bindPopup("VOTRE POSITION").openPopup();
+        spawnPNJs(e.latlng); // Faire apparaître des cibles autour de toi
     });
 
-    function buyBusiness() {
+    map.on('locationerror', function() {
+        addLog("ERREUR GPS : Vérifiez vos autorisations.");
+    });
+
+    // APPARITION PNJ (Points Rouges)
+    function spawnPNJs(pos) {
+        for(let i=0; i<5; i++) {
+            let lat = pos.lat + (Math.random() - 0.5) * 0.01;
+            let lng = pos.lng + (Math.random() - 0.5) * 0.01;
+            L.circleMarker([lat, lng], {radius: 8, color: '#ff4d4d', fillOpacity: 0.8}).addTo(map)
+              .bindPopup("CIBLE PNJ - NIVEAU 1");
+        }
+        addLog("5 CIBLES PNJ DÉTECTÉES.");
+    }
+
+    // ACHETER (Points Bleus)
+    function buyBiz() {
         if(cash >= 5000) {
             cash -= 5000;
-            let pos = map.getCenter();
-            L.marker(pos, {icon: businessIcon}).addTo(map).bindPopup("ENTREPRISE CODEX").openPopup();
+            let center = map.getCenter();
+            L.circleMarker(center, {radius: 10, color: '#00d9ff', fillOpacity: 1}).addTo(map)
+              .bindPopup("VOTRE ENTREPRISE").openPopup();
             document.getElementById('cash').innerText = cash.toLocaleString() + " Ø";
-            addLog("Acquisition d'entreprise réussie.");
+            addLog("ACQUISITION RÉUSSIE (-5000 Ø)");
         } else {
-            addLog("ERREUR: Fonds insuffisants.");
+            addLog("FONDS INSUFFISANTS.");
         }
     }
 
-    function robTarget() {
-        let gain = Math.floor(Math.random() * 1500) + 500;
-        cash += gain;
+    // BRAQUER
+    function robPNJ() {
+        let win = Math.random() > 0.4;
+        if(win) {
+            let gain = Math.floor(Math.random() * 2000) + 500;
+            cash += gain;
+            addLog("BRAQUAGE RÉUSSI : +" + gain + " Ø");
+        } else {
+            cash -= 1000;
+            addLog("ÉCHEC : Amende de -1000 Ø");
+        }
         document.getElementById('cash').innerText = cash.toLocaleString() + " Ø";
-        addLog("BRAQUAGE RÉUSSI: +" + gain + " Ø");
     }
 
-    // Lancer la loc au démarrage
-    locateMe();
+    addLog("Appuyez sur 'ACTIVER LOCALISATION' pour commencer.");
 </script>
-
 </body>
 </html>
