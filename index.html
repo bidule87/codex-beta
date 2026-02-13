@@ -3,86 +3,135 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CODEX - BÊTA PRIVILÈGE</title>
+    <title>CODEX SYSTEM - BÊTA PRIVÉE</title>
     <style>
-        body { background: #000; color: #fff; font-family: 'Courier New', monospace; margin: 0; padding: 20px; display: flex; justify-content: center; }
-        .console { border: 2px solid #3498db; width: 100%; max-width: 400px; padding: 20px; box-shadow: 0 0 20px rgba(52, 152, 219, 0.2); }
-        .header { display: flex; align-items: center; gap: 15px; border-bottom: 1px solid #111; padding-bottom: 15px; }
-        .avatar { width: 50px; height: 50px; border-radius: 50%; border: 2px solid #3498db; background: url('https://i.imgur.com/your-ai-image.jpg') center/cover; } /* Remplace par ton lien d'image */
-        .stats { margin: 20px 0; background: #050505; border: 1px solid #333; padding: 15px; }
-        .btn { width: 100%; padding: 12px; margin-top: 10px; border: none; cursor: pointer; font-weight: bold; font-family: 'Courier New'; }
-        .btn-buy { background: #3498db; color: #000; }
-        .btn-rob { background: #e74c3c; color: #fff; }
-        .log { font-size: 0.7rem; color: #2ecc71; margin-top: 15px; height: 60px; overflow-y: auto; border-top: 1px solid #111; padding-top: 10px; }
+        :root { --blue: #00d9ff; --red: #ff4d4d; --gold: #f1c40f; --dark: #0a0a0b; }
+        body { background: var(--dark); color: white; font-family: 'Segoe UI', Roboto, sans-serif; margin: 0; overflow: hidden; }
+        
+        /* HEADER & IA */
+        .status-bar { background: rgba(255,255,255,0.05); padding: 10px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #222; }
+        .ai-eye { width: 40px; height: 40px; border: 2px solid var(--blue); border-radius: 50%; position: relative; box-shadow: 0 0 15px var(--blue); }
+        .ai-eye::after { content: ''; position: absolute; width: 10px; height: 10px; background: var(--blue); border-radius: 50%; top: 15px; left: 15px; animation: blink 3s infinite; }
+
+        /* CARTE GPS SIMULÉE */
+        #map { width: 100%; height: 50vh; background: radial-gradient(circle, #1a1a1d 0%, #000 100%); position: relative; overflow: hidden; border-bottom: 2px solid #222; }
+        .grid { position: absolute; width: 200%; height: 200%; background-image: linear-gradient(#111 1px, transparent 1px), linear-gradient(90deg, #111 1px, transparent 1px); background-size: 40px 40px; transform: rotateX(60deg) translateY(-100px); top: -50%; left: -50%; }
+        .poi { position: absolute; width: 12px; height: 12px; border-radius: 50%; transform: translate(-50%, -50%); cursor: pointer; }
+        .poi.mine { background: var(--blue); box-shadow: 0 0 10px var(--blue); }
+        .poi.target { background: var(--red); box-shadow: 0 0 10px var(--red); animation: pulse 1.5s infinite; }
+
+        /* DASHBOARD */
+        .dashboard { padding: 20px; display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .card { background: #111; border: 1px solid #333; padding: 15px; border-radius: 8px; }
+        .full { grid-column: span 2; }
+        .big-val { font-size: 1.8rem; font-weight: bold; color: var(--gold); margin: 5px 0; }
+        
+        .btn { border-radius: 4px; border: none; padding: 12px; font-weight: bold; cursor: pointer; text-transform: uppercase; width: 100%; transition: 0.3s; }
+        .btn-blue { background: var(--blue); color: black; }
+        .btn-red { background: transparent; border: 1px solid var(--red); color: var(--red); margin-top: 10px; }
+        .btn:active { transform: scale(0.95); }
+
+        @keyframes pulse { 0% { opacity: 0.5; } 50% { opacity: 1; } 100% { opacity: 0.5; } }
+        @keyframes blink { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.2); } }
     </style>
 </head>
 <body>
 
-<div class="console">
-    <div class="header">
-        <div class="avatar" style="background-color: #001529; border: 2px solid #3498db; position: relative;">
-            <div style="position: absolute; width: 8px; height: 8px; background: #00fbff; border-radius: 50%; top: 15px; left: 12px; box-shadow: 0 0 10px #00fbff;"></div>
-            <div style="position: absolute; width: 8px; height: 8px; background: #00fbff; border-radius: 50%; top: 15px; right: 12px; box-shadow: 0 0 10px #00fbff;"></div>
+    <div class="status-bar">
+        <div style="display: flex; align-items: center; gap: 15px;">
+            <div class="ai-eye"></div>
+            <div>
+                <div style="font-size: 0.8rem; color: var(--blue);">SYSTEME CODEX v2.0</div>
+                <div id="ai-text" style="font-size: 0.6rem; color: #888;">"Connecté. Prêt à infiltrer le marché."</div>
+            </div>
         </div>
-        <div>
-            <p style="margin: 0; font-size: 0.8rem; color: #3498db;">GEMINI_OS (BÊTA)</p>
-            <p id="ai-msg" style="margin: 0; font-size: 0.6rem; color: #888;">"Bonjour Joueur Privilégié. Prêt ?"</p>
+        <div style="text-align: right;">
+            <div style="font-size: 0.6rem; color: #555;">SÉCURITÉ</div>
+            <div style="color: #2ecc71;">CADENAS: 3/3</div>
         </div>
     </div>
 
-    <div class="stats">
-        <p style="margin: 0; font-size: 0.7rem; color: #888;">SOLDE PERSONNEL :</p>
-        <p id="cash" style="font-size: 1.5rem; margin: 5px 0; color: #f1c40f;">10 000 Ø</p>
-        <p id="debt-info" style="margin: 0; font-size: 0.6rem; color: #555;">DÉCOUVERT MAX : -5 000 Ø</p>
+    <div id="map">
+        <div class="grid"></div>
+        </div>
+
+    <div class="dashboard">
+        <div class="card full">
+            <div style="font-size: 0.7rem; color: #888;">CAPITAL DISPONIBLE</div>
+            <div id="cash-val" class="big-val">10 000 Ø</div>
+            <div id="debt-info" style="font-size: 0.6rem; color: #444;">DÉCOUVERT AUTORISÉ : -5 000 Ø</div>
+        </div>
+
+        <div class="card">
+            <div style="font-size: 0.7rem; color: #888;">PATRIMOINE</div>
+            <div id="assets-val" style="color: white; font-size: 1.1rem;">0 Ø</div>
+        </div>
+        
+        <div class="card">
+            <button class="btn btn-blue" onclick="buyBiz()">ACHETER BIEN</button>
+        </div>
+
+        <div class="card full">
+            <button class="btn btn-red" onclick="robPNJ()">BRAQUER CIBLE PNJ</button>
+            <div id="logs" style="font-size: 0.6rem; color: #666; margin-top: 10px; height: 40px; overflow: hidden;">> Système en attente...</div>
+        </div>
     </div>
-
-    <button class="btn btn-buy" onclick="buyAsset()">ACHETER COMMERCE (10 000 Ø)</button>
-    <button class="btn btn-rob" onclick="attemptRobbery()">BRAQUER UN PNJ</button>
-
-    <div id="logs" class="log">> Système initialisé...<br>> En attente d'ordres...</div>
-</div>
 
 <script>
-    let cash = localStorage.getItem('codex_cash') ? parseInt(localStorage.getItem('codex_cash')) : 10000;
-    let assets = localStorage.getItem('codex_assets') ? parseInt(localStorage.getItem('codex_assets')) : 0;
+    let cash = localStorage.getItem('c_cash') ? parseInt(localStorage.getItem('c_cash')) : 10000;
+    let assets = localStorage.getItem('c_assets') ? parseInt(localStorage.getItem('c_assets')) : 0;
+    let bizCount = 0;
 
-    function updateUI() {
-        document.getElementById('cash').innerText = cash.toLocaleString() + " Ø";
-        localStorage.setItem('codex_cash', cash);
-        localStorage.setItem('codex_assets', assets);
+    function update() {
+        document.getElementById('cash-val').innerText = cash.toLocaleString() + " Ø";
+        document.getElementById('assets-val').innerText = assets.toLocaleString() + " Ø";
+        document.getElementById('debt-info').innerText = "DÉCOUVERT AUTORISÉ : -" + (assets * 0.5 + 5000).toLocaleString() + " Ø";
+        localStorage.setItem('c_cash', cash);
+        localStorage.setItem('c_assets', assets);
     }
 
-    function addLog(msg) {
-        const logDiv = document.getElementById('logs');
-        logDiv.innerHTML = "> " + msg + "<br>" + logDiv.innerHTML;
+    function addLog(txt) {
+        document.getElementById('logs').innerHTML = "> " + txt + "<br>" + document.getElementById('logs').innerHTML;
     }
 
-    function buyAsset() {
-        if (cash >= 10000 || (cash - 10000 >= -(assets * 0.5 + 5000))) {
-            cash -= 10000;
+    function spawnPoint(type) {
+        const map = document.getElementById('map');
+        const p = document.createElement('div');
+        p.className = 'poi ' + type;
+        p.style.left = Math.random() * 80 + 10 + "%";
+        p.style.top = Math.random() * 80 + 10 + "%";
+        map.appendChild(p);
+    }
+
+    function buyBiz() {
+        let cost = 10000;
+        let limit = -(assets * 0.5 + 5000);
+        if (cash - cost >= limit) {
+            cash -= cost;
             assets += 10000;
-            updateUI();
-            addLog("Achat réussi ! Patrimoine augmenté.");
+            spawnPoint('mine');
+            addLog("Acquisition validée.");
+            update();
         } else {
-            addLog("ERREUR : Fonds insuffisants.");
+            addLog("REFUSÉ : Trop de dettes.");
         }
     }
 
-    function attemptRobbery() {
+    function robPNJ() {
         if (Math.random() > 0.5) {
-            let gain = Math.floor(Math.random() * 2000) + 500;
-            cash += gain;
-            addLog("BRAQUAGE RÉUSSI ! +" + gain + " Ø");
+            let win = 2500;
+            cash += win;
+            addLog("Braquage réussi: +" + win + " Ø");
         } else {
-            let loss = 1000;
-            cash -= loss;
-            addLog("ÉCHEC ! Amende de 1 000 Ø");
+            cash -= 1500;
+            addLog("Échec: Amende de -1 500 Ø");
         }
-        updateUI();
+        update();
     }
 
-    updateUI();
+    // Initialisation targets
+    for(let i=0; i<5; i++) spawnPoint('target');
+    update();
 </script>
-
 </body>
 </html>
