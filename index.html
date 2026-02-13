@@ -19,7 +19,7 @@
             overflow: hidden;
         }
 
-        /* HEADER IA (Fixe) */
+        /* HEADER IA FIXÉ */
         .header-ia {
             padding: 15px;
             display: flex;
@@ -47,11 +47,12 @@
         }
 
         .holding-card {
-            background: #0a0a0a;
+            background: rgba(10, 10, 10, 0.8);
             border: 1px solid #222;
             padding: 20px;
             text-align: center;
             border-radius: 10px;
+            margin-top: 20px;
         }
 
         .photo-container {
@@ -60,6 +61,7 @@
             margin: 0 auto 15px;
             border: 2px solid var(--gold);
             background: #111;
+            position: relative;
         }
 
         #holding-img {
@@ -68,29 +70,30 @@
             object-fit: cover;
         }
 
-        /* BOUTON TELECHARGER */
         .btn-upload {
+            display: block;
             background: rgba(0, 217, 255, 0.1);
             color: var(--neon-blue);
             border: 1px solid var(--neon-blue);
-            padding: 12px;
-            width: 100%;
+            padding: 10px;
             font-weight: bold;
             text-transform: uppercase;
             cursor: pointer;
-            margin-top: 10px;
+            margin: 10px auto;
+            width: fit-content;
         }
 
         input[type="file"] { display: none; }
 
         input[type="text"] {
             width: 100%;
-            background: #111;
+            background: #000;
             border: 1px solid #333;
-            color: white;
+            color: #fff;
             padding: 12px;
             margin-top: 15px;
             box-sizing: border-box;
+            text-align: center;
         }
 
         nav {
@@ -120,7 +123,7 @@
 <body>
 
 <div class="header-ia">
-    <img src="agent-femme.jpg" class="ia-avatar" alt="IA">
+    <img src="https://r.jina.ai/i/6646549a15f048698c1d530666014605" class="ia-avatar" alt="IA">
     <div>
         <h2 style="margin:0; font-size: 1rem; color: var(--neon-blue);">UNITÉ CODEX-ALPHA</h2>
         <p style="margin:0; font-size: 0.6rem; color: #555;">SCANNER ACTIF</p>
@@ -132,7 +135,7 @@
         <div class="photo-container">
             <img id="holding-img" src="https://via.placeholder.com/130/111/d4af37?text=LOGO" alt="Holding">
         </div>
-        <h3 id="holding-name" style="color:var(--gold); margin:0;">MA HOLDING</h3>
+        <h3 id="holding-name" style="color:var(--gold); margin:0; text-transform: uppercase;">MA HOLDING</h3>
         
         <label class="btn-upload">
             TÉLÉCHARGER PHOTO
