@@ -3,187 +3,132 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GEO EMPIRE - GESTION PROFESSIONNELLE</title>
+    <title>GEO EMPIRE - SYSTÈME BANCAIRE</title>
     <style>
         :root {
-            --bg-gray: #f4f4f4;
-            --white: #ffffff;
-            --blue-main: #2c3e50;
-            --blue-light: #3498db;
-            --border: #ddd;
-            --text: #333;
-            --green: #27ae60;
+            --bg-overlay: rgba(240, 242, 245, 0.85); /* Moins opaque pour mieux voir le fond */
+            --bank-blue: #1a3a5a;
+            --gold-dark: #b8860b;
+            --border: #ccc;
         }
 
         body { 
-            background-color: var(--bg-gray); 
-            /* IMAGE DE VEILLE EN FOND */
-            background-image: linear-gradient(rgba(244, 244, 244, 0.9), rgba(244, 244, 244, 0.9)), 
-                              url('https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&q=80&w=1200');
+            background-image: url('https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&q=80&w=1200');
             background-size: cover;
             background-attachment: fixed;
-            color: var(--text); 
-            font-family: 'Segoe UI', Arial, sans-serif;
+            background-position: center;
+            font-family: 'Segoe UI', sans-serif;
             margin: 0; padding: 0;
+            color: #333;
         }
 
-        header {
-            background: var(--white);
-            border-bottom: 1px solid var(--border);
-            padding: 10px 20px;
-            display: flex; justify-content: space-between; align-items: center;
+        .overlay { background: var(--bg-overlay); min-height: 100vh; padding-bottom: 50px; }
+
+        header { background: #fff; padding: 10px 20px; border-bottom: 2px solid var(--bank-blue); display: flex; justify-content: space-between; align-items: center; }
+
+        .stats-bar { background: #333; color: #fff; padding: 8px 20px; display: flex; gap: 20px; font-size: 0.8rem; }
+
+        nav.main-nav { background: #eee; display: flex; border-bottom: 1px solid var(--border); }
+        nav.main-nav button { background: none; border: none; padding: 15px 20px; cursor: pointer; font-weight: bold; color: #666; }
+        nav.main-nav button.active { background: #fff; color: var(--bank-blue); border-top: 3px solid var(--bank-blue); }
+
+        .container { padding: 20px; max-width: 1000px; margin: auto; }
+
+        /* DESIGN TYPE BANQUE PRO */
+        .bank-card {
+            background: #fff; border: 1px solid var(--border); border-radius: 4px; overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1); margin-bottom: 20px;
         }
 
-        .stats-bar {
-            background: rgba(233, 233, 233, 0.95);
-            border-bottom: 1px solid var(--border);
-            display: flex; padding: 10px 20px; gap: 25px; font-size: 0.8rem;
+        .bank-header { background: var(--bank-blue); color: #fff; padding: 15px 20px; display: flex; justify-content: space-between; }
+
+        .bank-content { padding: 25px; }
+
+        .timer-lock {
+            background: #fff9e6; border: 1px solid #ffe58f; padding: 10px;
+            font-size: 0.75rem; color: #856404; display: flex; align-items: center; gap: 10px; margin-bottom: 20px;
         }
 
-        nav.main-nav {
-            background: var(--white);
-            border-bottom: 1px solid var(--border);
-            display: flex; padding: 0 20px;
+        .rate-box {
+            border: 1px solid #eee; padding: 15px; border-radius: 4px; margin-bottom: 15px;
+            background: #fdfdfd;
         }
 
-        nav.main-nav button {
-            background: none; border: none; padding: 15px 25px;
-            font-size: 0.85rem; color: #666; cursor: pointer;
-            border-bottom: 3px solid transparent; text-transform: uppercase;
+        .btn-confirm {
+            background: var(--bank-blue); color: white; border: none;
+            padding: 12px 25px; border-radius: 4px; cursor: pointer;
+            width: 100%; font-weight: bold; text-transform: uppercase;
         }
 
-        nav.main-nav button.active {
-            border-bottom: 3px solid var(--blue-light);
-            color: var(--blue-light); font-weight: bold;
-        }
-
-        .container { padding: 20px; max-width: 1100px; margin: auto; }
-
-        .card {
-            background: var(--white);
-            border: 1px solid var(--border);
-            border-radius: 4px; margin-bottom: 25px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-        }
-
-        .card-header {
-            background: #fdfdfd; padding: 12px 20px;
-            border-bottom: 1px solid var(--border);
-            font-weight: bold; color: var(--blue-main); font-size: 0.9rem;
-            display: flex; align-items: center; gap: 10px;
-        }
-
-        /* GRILLE D'ACTIONS IMMOBILISATION */
-        .action-grid {
-            display: grid; grid-template-columns: repeat(5, 1fr);
-            gap: 1px; background: var(--border); border-top: 1px solid var(--border);
-        }
-        .action-item {
-            background: var(--white); padding: 25px 10px; text-align: center; cursor: pointer;
-        }
-        .action-item:hover { background: #f9f9f9; }
-        .action-item span { display: block; font-size: 1.5rem; margin-bottom: 5px; }
-
-        /* INTERFACE BANQUE */
-        .bank-tabs { display: flex; gap: 10px; margin-bottom: 15px; }
-        .bank-tab-btn {
-            background: #eee; border: 1px solid var(--border); padding: 8px 15px;
-            font-size: 0.75rem; cursor: pointer; border-radius: 3px;
-        }
-        .bank-tab-btn.active { background: var(--blue-main); color: white; border-color: var(--blue-main); }
-
-        input[type="range"] { width: 100%; margin: 10px 0; }
+        .btn-confirm:disabled { background: #ccc; cursor: not-allowed; }
     </style>
 </head>
 <body>
 
-<header>
-    <div style="font-weight: bold; font-size: 1.1rem; color: var(--blue-main);">GEO EMPIRE <span style="color:#ccc; font-weight:normal;">| Système</span></div>
-    <div style="display:flex; align-items:center; gap:15px;">
-        <div style="text-align:right;">
-            <div style="font-size:0.75rem; font-weight:bold;">UNITÉ CODEX-ALPHA</div>
-            <div style="font-size:0.65rem; color:var(--green);">● En ligne</div>
+<div class="overlay">
+    <header>
+        <div style="font-weight: bold; color: var(--bank-blue);">GEO EMPIRE <span style="font-weight: normal; color: #999;">| GESTION BANCAIRE</span></div>
+        <div style="display:flex; align-items:center; gap:10px; font-size:0.8rem;">
+            <b>PULLSAR HOLDING</b>
+            <div style="width:30px; height:30px; border-radius:50%; background:#2c3e50;"></div>
         </div>
-        <div style="width:35px; height:35px; border-radius:50%; background:#ddd; border:1px solid #ccc;"></div>
+    </header>
+
+    <div class="stats-bar">
+        <span>Capital: <b>850 645 €</b></span>
+        <span>Liquidités: <b>152 000 €</b></span>
+        <span>Statut: <b style="color:#4eeaff;">ACTIONNAIRE MAJORITAIRE</b></span>
     </div>
-</header>
 
-<div class="stats-bar">
-    <div>Perso: <b>1 500 €</b></div>
-    <div>Holding: <b>850 645 €</b></div>
-    <div>Position: <b>162e place</b></div>
-    <div>Niveau: <b style="color:var(--blue-light);">7</b></div>
-</div>
+    <nav class="main-nav">
+        <button onclick="location.reload()">SITUATION</button>
+        <button class="active">BANQUE PRIVÉE</button>
+        <button>BANQUE MUNICIPALE</button>
+        <button>MARCHÉ PUBLIC</button>
+    </nav>
 
-<nav class="main-nav">
-    <button>Accueil</button>
-    <button class="active" onclick="showTab('situation')">Situation</button>
-    <button onclick="showTab('banque')">Banque</button>
-    <button>Business</button>
-    <button>Services</button>
-</nav>
-
-<div class="container">
-    
-    <div id="tab-situation">
-        <div class="card">
-            <div class="card-header">🏢 ADMINISTRATION HOLDING : PULLSAR</div>
-            <div class="action-grid">
-                <div class="action-item"><span>🏠</span><div style="font-size:0.7rem; font-weight:bold;">Propriétés</div></div>
-                <div class="action-item"><span>🛒</span><div style="font-size:0.7rem; font-weight:bold;">Acheter</div></div>
-                <div class="action-item"><span>🏗️</span><div style="font-size:0.7rem; font-weight:bold;">Travaux</div></div>
-                <div class="action-item"><span>💼</span><div style="font-size:0.7rem; font-weight:bold;">Assurance</div></div>
-                <div class="action-item"><span>ℹ️</span><div style="font-size:0.7rem; font-weight:bold;">Infos</div></div>
+    <div class="container">
+        
+        <div class="bank-card">
+            <div class="bank-header">
+                <span>CONTRÔLE DES TAUX - BANQUE PRIVÉE #04</span>
+                <small>PROPRIÉTAIRE : PULLSAR</small>
             </div>
-        </div>
-    </div>
-
-    <div id="tab-banque" style="display:none;">
-        <div class="card">
-            <div class="card-header">🏦 CENTRE FINANCIER & BANCAIRE</div>
-            <div style="padding: 20px;">
-                <div class="bank-tabs">
-                    <button class="bank-tab-btn active">BANQUE PRIVÉE (HOLDING)</button>
-                    <button class="bank-tab-btn">BANQUE MUNICIPALE</button>
-                    <button class="bank-tab-btn">BANQUE ENTREPRISE</button>
+            
+            <div class="bank-content">
+                <div class="timer-lock">
+                    <span>⚠️</span>
+                    <div>
+                        <b>RÈGLE DE STABILITÉ ÉCONOMIQUE :</b><br>
+                        Une fois validés, les taux sont bloqués pour 7 jours. Prochaine modification possible le : <b>20 Février 2026</b>.
+                    </div>
                 </div>
 
-                <div style="border:1px solid var(--border); padding:20px; border-radius:4px;">
+                <div class="rate-box">
                     <div style="display:flex; justify-content:space-between; margin-bottom:10px;">
-                        <span style="font-size:0.8rem; font-weight:bold;">Taux d'intérêt des Prêts</span>
-                        <b id="loan-val" style="color:var(--blue-light)">4.0%</b>
+                        <label><b>Taux de Prêt Clientèle</b></label>
+                        <b id="val1" style="color:var(--bank-blue); font-size:1.2rem;">4.5%</b>
                     </div>
-                    <input type="range" min="0" max="50" step="0.5" value="4" oninput="document.getElementById('loan-val').innerText = this.value + '.0%'">
-                    
-                    <div style="display:flex; justify-content:space-between; margin-bottom:10px; margin-top:20px;">
-                        <span style="font-size:0.8rem; font-weight:bold;">Rémunération Épargne (Livret)</span>
-                        <b id="save-val" style="color:var(--blue-light)">2.0%</b>
-                    </div>
-                    <input type="range" min="0" max="15" step="0.1" value="2" oninput="document.getElementById('save-val').innerText = this.value + '.0%'">
+                    <input type="range" min="0.5" max="25" step="0.1" value="4.5" style="width:100%;" oninput="document.getElementById('val1').innerText = this.value + '%'">
                 </div>
+
+                <div class="rate-box">
+                    <div style="display:flex; justify-content:space-between; margin-bottom:10px;">
+                        <label><b>Rémunération Livret A</b></label>
+                        <b id="val2" style="color:var(--bank-blue); font-size:1.2rem;">1.8%</b>
+                    </div>
+                    <input type="range" min="0.1" max="10" step="0.1" value="1.8" style="width:100%;" oninput="document.getElementById('val2').innerText = this.value + '%'">
+                </div>
+
+                <button class="btn-confirm" onclick="alert('Taux verrouillés pour 1 semaine !')">Valider et Verrouiller les Taux</button>
             </div>
         </div>
+
+        <div style="text-align: center; color: #666; font-size: 0.7rem; font-style: italic;">
+            Note : Les taux de la Banque Municipale sont gérés par le Bureau du Maire élu.
+        </div>
     </div>
-
 </div>
-
-<script>
-    function showTab(tabName) {
-        // Cacher tous les onglets
-        document.getElementById('tab-situation').style.display = 'none';
-        document.getElementById('tab-banque').style.display = 'none';
-        
-        // Retirer la classe active des boutons
-        const buttons = document.querySelectorAll('.main-nav button');
-        buttons.forEach(btn => btn.classList.remove('active'));
-
-        // Afficher l'onglet cliqué
-        document.getElementById('tab-' + tabName).style.display = 'block';
-        
-        // Activer le bouton correspondant
-        event.currentTarget.classList.add('active');
-    }
-</script>
 
 </body>
 </html>
