@@ -3,129 +3,118 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>CODEX SYSTEM - ALPHA</title>
+    <title>CODEX FINAL BÊTA</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <style>
         :root { --blue: #00d9ff; --red: #ff4d4d; --gold: #f1c40f; }
         body { background: #000; color: #fff; font-family: 'Courier New', monospace; margin: 0; overflow: hidden; }
         
-        /* HEADER AVEC TON IA */
-        .header { background: #0a0a0a; padding: 10px; display: flex; align-items: center; border-bottom: 2px solid var(--blue); position: relative; z-index: 2000; }
-        .avatar { width: 65px; height: 65px; border-radius: 50%; border: 2px solid var(--blue); box-shadow: 0 0 15px var(--blue); overflow: hidden; margin-right: 15px; background: #111; }
-        .avatar img { width: 100%; height: 100%; object-fit: cover; }
+        /* IA CODEX ANIMÉE */
+        .header { background: #0a0a0a; padding: 15px; display: flex; align-items: center; border-bottom: 3px solid var(--blue); }
+        .ia-avatar { width: 60px; height: 60px; border-radius: 50%; border: 2px solid var(--blue); position: relative; background: radial-gradient(circle, #002233, #000); box-shadow: 0 0 20px var(--blue); margin-right: 15px; }
+        .eye { position: absolute; width: 14px; height: 4px; background: var(--blue); border-radius: 10px; top: 28px; box-shadow: 0 0 10px var(--blue); animation: blink 4s infinite; }
+        .eye.left { left: 12px; } .eye.right { right: 12px; }
+        
+        /* MAP SATELLITE */
+        #map { width: 100%; height: 50vh; background: #000; }
+        .leaflet-tile-pane { filter: brightness(0.5) invert(1) contrast(3) hue-rotate(180deg); }
 
-        /* CARTE SATELLITE DARK */
-        #map { width: 100%; height: 50vh; background: #000; z-index: 1; }
-        .leaflet-tile-pane { filter: brightness(0.6) invert(1) contrast(3) hue-rotate(180deg); }
-
-        /* INTERFACE DE CONTROLE */
-        .ui { padding: 15px; background: #000; height: 50vh; box-sizing: border-box; display: flex; flex-direction: column; gap: 10px; border-top: 1px solid #333; }
-        .cash-box { border: 1px solid #444; background: #111; padding: 10px; text-align: center; border-radius: 4px; }
-        .cash-val { font-size: 2rem; color: var(--gold); font-weight: bold; }
+        /* DASHBOARD PRO */
+        .ui { padding: 15px; background: #000; height: 50vh; display: flex; flex-direction: column; gap: 10px; }
+        .cash-box { border: 2px solid #222; background: #050505; padding: 10px; text-align: center; border-radius: 5px; }
+        .money { font-size: 2.5rem; color: var(--gold); font-weight: bold; text-shadow: 0 0 15px rgba(241,196,15,0.4); }
         
         .actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-        .btn { padding: 15px; border: none; font-weight: bold; cursor: pointer; text-transform: uppercase; border-radius: 4px; transition: 0.2s; }
-        .btn-buy { background: var(--blue); color: #000; }
-        .btn-rob { background: transparent; border: 1px solid var(--red); color: var(--red); }
-        .btn:active { transform: scale(0.98); background: #fff; color: #000; }
-
-        #console { background: #050505; border: 1px solid #222; padding: 10px; font-size: 0.7rem; color: #00ff00; height: 80px; overflow-y: auto; }
+        .btn { padding: 20px; border: none; font-weight: bold; cursor: pointer; text-transform: uppercase; border-radius: 5px; font-size: 1rem; transition: 0.3s; }
+        .btn-buy { background: var(--blue); color: #000; box-shadow: 0 0 10px var(--blue); }
+        .btn-rob { background: transparent; border: 2px solid var(--red); color: var(--red); }
+        
+        #console { background: #050505; border: 1px solid #222; padding: 10px; font-size: 0.7rem; color: #00ff00; height: 100px; overflow-y: auto; border-radius: 5px; }
+        @keyframes blink { 0%, 90%, 100% { transform: scaleY(1); } 95% { transform: scaleY(0.1); } }
     </style>
 </head>
 <body>
 
 <div class="header">
-    <div class="avatar">
-        <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=CodexAI&backgroundColor=00d9ff&mouth=smile" alt="IA">
-    </div>
+    <div class="ia-avatar"><div class="eye left"></div><div class="eye right"></div></div>
     <div>
-        <div style="color: var(--blue); font-weight: bold;">UNITÉ CODEX-ALPHA</div>
-        <div id="status" style="font-size: 0.6rem; color: #888;">GÉOLOCALISATION EN COURS...</div>
+        <div style="color: var(--blue); font-weight: bold; font-size: 1.3rem;">CODEX CORE v1.0</div>
+        <div id="status" style="font-size: 0.7rem; color: #888;">EN ATTENTE DE LIAISON GPS...</div>
     </div>
 </div>
 
 <div id="map"></div>
 
 <div class="ui">
-    <div class="cash-box">
-        <div style="font-size: 0.7rem; color: #888;">CAPITAL DISPONIBLE</div>
-        <div id="cash" class="cash-val">10 000 Ø</div>
-    </div>
-
-    <div id="console">> Initialisation du noyau...</div>
-
+    <div class="cash-box"><div id="cash" class="money">10 000 Ø</div></div>
+    <div id="console">> SYSTÈME CODEX PRÊT. INITIALISEZ LE RADAR...</div>
     <div class="actions">
-        <button class="btn btn-buy" onclick="buyAsset()">ACHETER ICI</button>
-        <button class="btn btn-rob" onclick="robPNJ()">BRAQUER CIBLE</button>
+        <button class="btn btn-buy" onclick="buyBiz()">ACHETER</button>
+        <button class="btn btn-rob" onclick="robPNJ()">BRAQUER</button>
     </div>
-    <button onclick="startGPS()" style="background: #222; color: #fff; border: none; padding: 10px; font-size: 0.7rem; cursor: pointer; border-radius: 4px;">ACTIVER RADAR GPS</button>
+    <button onclick="activateGPS()" style="background:#222; color:#fff; border:1px solid #444; padding:12px; border-radius:5px; font-weight:bold;">ACTIVER RADAR GPS & CIBLES</button>
 </div>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
     let cash = 10000;
-    // Position par défaut (Paris) en attendant le GPS
-    var map = L.map('map', { zoomControl: false }).setView([48.8566, 2.3522], 15);
+    var map = L.map('map', {zoomControl: false}).setView([45.858, 1.300], 14);
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
 
-    function log(msg) {
+    function addLog(m) {
         const c = document.getElementById('console');
-        c.innerHTML = "> " + msg + "<br>" + c.innerHTML;
+        c.innerHTML = "> " + m + "<br>" + c.innerHTML;
+        c.scrollTop = 0;
     }
 
-    // FONCTION GPS ET PNJ
-    function startGPS() {
-        log("Tentative de liaison satellite...");
+    function activateGPS() {
+        addLog("Lancement du protocole de localisation...");
         map.locate({setView: true, maxZoom: 16});
     }
 
     map.on('locationfound', function(e) {
-        log("Liaison établie. Position verrouillée.");
-        document.getElementById('status').innerText = "RADAR ACTIF - ZONE SÉCURISÉE";
+        addLog("Position verrouillée. Scan des entreprises aux alentours...");
+        document.getElementById('status').innerText = "LIAISON ÉTABLIE - RADAR ACTIF";
+        L.circle(e.latlng, {radius: 40, color: '#00d9ff', fillOpacity: 0.5}).addTo(map);
         
-        // Ton icône (Bleu)
-        L.circle(e.latlng, {radius: 40, color: '#00d9ff', fillOpacity: 0.4}).addTo(map);
-        
-        // Génération immédiate de PNJ (Points Rouges)
-        for(let i=0; i<6; i++) {
-            let lat = e.latlng.lat + (Math.random() - 0.5) * 0.008;
-            let lng = e.latlng.lng + (Math.random() - 0.5) * 0.008;
-            L.circleMarker([lat, lng], {radius: 10, color: '#ff4d4d', fillOpacity: 0.8}).addTo(map)
-              .bindPopup("<b>CIBLE PNJ</b><br>Fonds détectés: 1500Ø");
+        // APPARITION FORCÉE DE 10 ENTREPRISES PNJ (Points Rouges)
+        for(let i=0; i<10; i++) {
+            let lat = e.latlng.lat + (Math.random() - 0.5) * 0.015;
+            let lng = e.latlng.lng + (Math.random() - 0.5) * 0.015;
+            L.circleMarker([lat, lng], {radius: 10, color: '#ff4d4d', fillOpacity: 0.8, weight: 2}).addTo(map)
+              .bindPopup("ENTREPRISE CIBLE PNJ");
         }
-        log("6 cibles détectées dans le périmètre.");
+        addLog("10 entreprises détectées dans la zone.");
     });
 
-    map.on('locationerror', function() {
-        log("ERREUR : GPS bloqué ou indisponible.");
-    });
-
-    function buyAsset() {
+    function buyBiz() {
         if(cash >= 5000) {
             cash -= 5000;
             let pos = map.getCenter();
             L.circleMarker(pos, {radius: 12, color: '#00d9ff', fillOpacity: 1, weight: 3}).addTo(map)
-              .bindPopup("<b>VOTRE BIEN</b>").openPopup();
+              .bindPopup("<b>VOTRE ENTREPRISE</b>").openPopup();
             update();
-            log("Secteur acquis. Revenus générés.");
-        } else {
-            log("FONDS INSUFFISANTS.");
-        }
+            addLog("Acquisition secteur validée.");
+        } else { addLog("FONDS INSUFFISANTS."); }
     }
 
     function robPNJ() {
-        let gain = Math.floor(Math.random() * 2000) + 500;
-        cash += gain;
-        log("BRAQUAGE RÉUSSI : +" + gain + " Ø");
+        let win = Math.random() > 0.4;
+        if(win) {
+            let gain = Math.floor(Math.random() * 2000) + 1000;
+            cash += gain;
+            addLog("PIRATAGE RÉUSSI : +" + gain + " Ø");
+        } else {
+            cash -= 1500;
+            addLog("ALERTE : Sécurité renforcée. Echec.");
+        }
         update();
     }
 
-    function update() {
-        document.getElementById('cash').innerText = cash.toLocaleString() + " Ø";
-    }
+    function update() { document.getElementById('cash').innerText = cash.toLocaleString() + " Ø"; }
 
-    // Lancer automatiquement
-    setTimeout(startGPS, 1000);
+    // Démarrage auto du scan après 1s
+    setTimeout(activateGPS, 1000);
 </script>
 </body>
 </html>
