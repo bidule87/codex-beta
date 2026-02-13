@@ -3,185 +3,167 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>GEO EMPIRE - CODEX PRO</title>
+    <title>GEO EMPIRE - DARK EDITION</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <style>
-        :root { --blue: #00d9ff; --gold: #d4af37; --red: #ff4d4d; --black: #000; --panel: #0a0a0a; }
-        body { background: var(--black); color: #fff; font-family: 'Courier New', monospace; margin: 0; overflow: hidden; }
+        /* CONFIGURATION DES COULEURS DARK PREMIUM */
+        :root { 
+            --blue: #00d9ff; 
+            --gold: #d4af37; 
+            --bg: #000000;
+            --card-bg: rgba(15, 15, 15, 0.9);
+            --neon-glow: 0 0 15px rgba(0, 217, 255, 0.5);
+        }
 
-        /* HEADER UNITÉ CODEX-ALPHA */
-        .header { background: #000; padding: 15px; display: flex; align-items: center; border-bottom: 2px solid var(--blue); height: 90px; box-sizing: border-box; }
-        .avatar-container { position: relative; width: 65px; height: 65px; margin-right: 15px; }
-        .avatar-img { width: 100%; height: 100%; border-radius: 50%; border: 2px solid var(--blue); box-shadow: 0 0 15px var(--blue); object-fit: cover; background: #111; }
-        .header-text h2 { margin: 0; font-size: 0.95rem; color: var(--blue); text-transform: uppercase; }
-        .header-text p { margin: 0; font-size: 0.65rem; color: #888; }
+        body { 
+            background: var(--bg); 
+            color: #fff; 
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; 
+            margin: 0; 
+            overflow: hidden; 
+        }
 
-        /* NAVIGATION */
-        nav { display: flex; background: #050505; border-bottom: 1px solid #222; overflow-x: auto; }
-        nav button { flex: 1; padding: 14px; border: none; background: none; color: #555; font-size: 0.65rem; text-transform: uppercase; font-weight: bold; cursor: pointer; min-width: 90px; }
-        nav button.active { color: var(--blue); border-bottom: 2px solid var(--blue); background: #111; }
+        /* HEADER AVEC TON IA ET CERCLE NÉON */
+        .header { 
+            background: linear-gradient(to bottom, #0a0a0a, #000); 
+            padding: 20px; 
+            display: flex; 
+            align-items: center; 
+            border-bottom: 1px solid rgba(0, 217, 255, 0.3);
+            height: 100px;
+        }
 
-        .tab-content { display: none; height: calc(100vh - 195px); overflow-y: auto; padding: 15px; box-sizing: border-box; }
+        .avatar-box {
+            position: relative;
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            padding: 3px;
+            background: conic-gradient(var(--blue), transparent, var(--blue));
+            animation: rotate 4s linear infinite;
+            margin-right: 15px;
+            box-shadow: var(--neon-glow);
+        }
+
+        @keyframes rotate { 100% { transform: rotate(360deg); } }
+
+        .avatar-img { 
+            width: 100%; 
+            height: 100%; 
+            border-radius: 50%; 
+            object-fit: cover; 
+            background: #000;
+            transform: rotate(-360deg); /* Annule la rotation du parent pour l'image */
+        }
+
+        .header-info h1 { 
+            margin: 0; 
+            font-size: 1rem; 
+            letter-spacing: 2px; 
+            color: var(--blue); 
+            text-shadow: var(--neon-glow);
+        }
+
+        /* NAVIGATION STYLE "FUTURISTE" */
+        nav { display: flex; background: #000; border-bottom: 1px solid #222; }
+        nav button { 
+            flex: 1; padding: 15px 5px; border: none; background: none; 
+            color: #444; font-size: 0.6rem; font-weight: 900; 
+            text-transform: uppercase; letter-spacing: 1px;
+        }
+        nav button.active { color: var(--blue); border-bottom: 2px solid var(--blue); }
+
+        /* CONTENU DES ONGLETS */
+        .tab-content { display: none; height: calc(100vh - 210px); overflow-y: auto; padding: 20px; }
         .tab-content.active { display: block; }
 
-        #map { width: 100%; height: 35vh; background: #000; }
-        .leaflet-tile-pane { filter: brightness(0.2) invert(1) contrast(3) hue-rotate(180deg); }
+        /* CARTE DARK SATELLITE */
+        #map { width: 100%; height: 35vh; filter: grayscale(1) invert(1) brightness(0.5); }
 
-        .card { background: var(--panel); border: 1px solid #222; padding: 15px; border-radius: 4px; margin-bottom: 15px; border-left: 4px solid var(--blue); }
-        input { background: #000; border: 1px solid #333; color: #fff; padding: 12px; width: 100%; border-radius: 4px; box-sizing: border-box; margin: 10px 0; }
-        
-        #console { background: #020202; color: #00ff00; font-family: 'Courier', monospace; font-size: 0.7rem; padding: 12px; height: 100px; overflow-y: auto; border: 1px solid #111; }
+        /* CARTES STYLE "GLASS" */
+        .card { 
+            background: var(--card-bg); 
+            border: 1px solid rgba(255,255,255,0.05); 
+            padding: 20px; 
+            border-radius: 12px; 
+            margin-bottom: 20px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
 
-        .btn-action { width: 100%; padding: 16px; border: none; border-radius: 4px; font-weight: bold; text-transform: uppercase; cursor: pointer; margin-top: 10px; }
-        .btn-blue { background: var(--blue); color: #000; }
-        .btn-gold { background: var(--gold); color: #000; }
+        .card h3 { color: var(--gold); font-size: 0.7rem; text-transform: uppercase; margin-top: 0; }
 
-        .footer-bar { position: fixed; bottom: 0; width: 100%; background: #000; padding: 15px; border-top: 2px solid var(--blue); display: flex; justify-content: space-around; font-size: 0.9rem; font-weight: bold; }
+        input { 
+            background: rgba(255,255,255,0.03); border: 1px solid #333; 
+            color: #fff; padding: 12px; width: 100%; border-radius: 8px; 
+            margin: 10px 0; font-size: 0.8rem;
+        }
+
+        /* BOUTONS LUXE */
+        .btn-main {
+            background: linear-gradient(45deg, var(--blue), #0088ff);
+            color: #000; border: none; padding: 18px; width: 100%;
+            border-radius: 8px; font-weight: bold; text-transform: uppercase;
+            box-shadow: 0 5px 15px rgba(0, 217, 255, 0.4);
+            cursor: pointer;
+        }
+
+        /* FOOTER STATS */
+        .footer { 
+            position: fixed; bottom: 0; width: 100%; background: #000; 
+            padding: 15px; border-top: 1px solid #222; 
+            display: flex; justify-content: space-around; font-size: 0.8rem;
+        }
     </style>
 </head>
 <body>
 
 <div class="header">
-    <div class="avatar-container">
-        <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=CodexAlpha" id="main-avatar" class="avatar-img">
+    <div class="avatar-box">
+        <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=CodexAlpha" class="avatar-img" id="display-photo">
     </div>
-    <div class="header-text">
-        <h2 id="holding-name-header">UNITÉ CODEX-ALPHA</h2>
-        <p>SCAN : <span id="scan-range" style="color:var(--gold)">RAYON 5KM</span></p>
+    <div class="header-info">
+        <h1 id="display-name">UNITÉ CODEX-ALPHA</h1>
+        <p style="font-size: 0.5rem; color: var(--gold); margin: 5px 0 0 0;">GEO EMPIRE V3 - CONNECTÉ</p>
     </div>
-    <div id="clock" style="margin-left: auto; color: var(--gold);">00:00:00</div>
 </div>
 
 <nav>
-    <button onclick="openTab('map-tab')" id="btn-radar" class="active">Radar</button>
+    <button onclick="openTab('map-tab')" class="active">Radar</button>
     <button onclick="openTab('holding-tab')">Holding</button>
-    <button onclick="openTab('ent-tab')">Entreprises</button>
+    <button onclick="openTab('ent-tab')">Filiales</button>
     <button onclick="openTab('mairie-tab')">Mairie</button>
-    <button onclick="openTab('rules-tab')">Règles</button>
 </nav>
 
 <div id="map-tab" class="tab-content active" style="padding:0;">
     <div id="map"></div>
-    <div style="padding:15px;">
-        <div id="console">> SYSTÈME EN ATTENTE...</div>
-        <button class="btn-action btn-blue" onclick="demarrerAlgorithme()">DÉCRYPTAGE ALGORITHME</button>
+    <div style="padding:20px;">
+        <button class="btn-main" onclick="alert('DÉCRYPTAGE EN COURS...')">ACTIVER ALGORITHME</button>
     </div>
 </div>
 
 <div id="holding-tab" class="tab-content">
     <div class="card">
-        <h3>IDENTITÉ DE L'EMPIRE</h3>
-        <input type="text" id="h-name-input" placeholder="NOM DE LA HOLDING" oninput="saveAndSync()">
-        <input type="text" id="h-photo-input" placeholder="URL PHOTO PROFIL" oninput="saveAndSync()">
-    </div>
-    <div class="card" style="border-left-color: var(--gold);">
-        <h3>BILAN FINANCIER</h3>
-        <p>PATRIMOINE : <span id="patrimoine-val" style="color:var(--gold)">0</span> Ø</p>
-        <p>LIMITE DÉCOUVERT : <span id="decouvert-val" style="color:var(--red)">0</span> Ø</p>
+        <h3>PARAMÈTRES HOLDING</h3>
+        <input type="text" placeholder="NOM DE L'EMPIRE" oninput="document.getElementById('display-name').innerText = this.value">
+        <input type="text" placeholder="URL PHOTO PROFIL" oninput="document.getElementById('display-photo').src = this.value">
     </div>
 </div>
 
 <div id="ent-tab" class="tab-content">
-    <h3>FILIALES RÉELLES</h3>
-    <div id="ent-list"></div>
-</div>
-
-<div id="mairie-tab" class="tab-content">
     <div class="card">
-        <h3>MAIRIE DE : <span id="city-name">SCAN...</span></h3>
-        <p>IMPÔTS FONCIERS : 2% / JOUR</p>
-        <button class="btn-action btn-gold">S'ACQUITTER DES TAXES</button>
+        <h3>LISTE DES FILIALES</h3>
+        <p style="color:#555; font-size:0.8rem;">Aucune entreprise acquise dans le rayon de 5km.</p>
     </div>
 </div>
 
-<div id="rules-tab" class="tab-content">
-    <div class="card">
-        <h3>PROTOCOLE (PDF P.23)</h3>
-        <p>NIVEAU : <span id="current-level" style="color:var(--blue)">1</span></p>
-        <p>PROCHAIN NIVEAU : <span id="next-level-req">50 000</span> Ø</p>
-    </div>
-</div>
-
-<div class="footer-bar">
-    <div style="color:var(--gold)">CASH: <span id="cash-val">10 000</span> Ø</div>
-    <div style="color:var(--blue)">LVL: <span id="footer-lvl">1</span></div>
+<div class="footer">
+    <div style="color:var(--gold)">CASH: 10 000 Ø</div>
+    <div style="color:var(--blue)">LVL: 1</div>
 </div>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
-    // --- ÉTAT DU JEU ---
-    let gameState = {
-        cash: 10000,
-        patrimoine: 0,
-        level: 1,
-        holdingName: "UNITÉ CODEX-ALPHA",
-        holdingPhoto: "https://api.dicebear.com/7.x/avataaars/svg?seed=CodexAlpha",
-        entreprises: []
-    };
-
-    // --- CHARGEMENT ---
-    function init() {
-        const saved = localStorage.getItem('geoEmpireSave');
-        if (saved) gameState = JSON.parse(saved);
-        updateUI();
-        renderEntreprises();
-    }
-
-    function save() {
-        localStorage.setItem('geoEmpireSave', JSON.stringify(gameState));
-    }
-
-    function updateUI() {
-        document.getElementById('holding-name-header').innerText = gameState.holdingName;
-        document.getElementById('main-avatar').src = gameState.holdingPhoto;
-        document.getElementById('h-name-input').value = gameState.holdingName;
-        document.getElementById('h-photo-input').value = gameState.holdingPhoto;
-        
-        document.getElementById('cash-val').innerText = gameState.cash.toLocaleString();
-        document.getElementById('patrimoine-val').innerText = gameState.patrimoine.toLocaleString();
-        document.getElementById('decouvert-val').innerText = (-(gameState.patrimoine * 0.5)).toLocaleString();
-        
-        // Calcul du Niveau (Niv 1 = 0, Niv 2 = 50k, etc.)
-        gameState.level = Math.floor(gameState.patrimoine / 50000) + 1;
-        document.getElementById('footer-lvl').innerText = gameState.level;
-        document.getElementById('current-level').innerText = gameState.level;
-        document.getElementById('next-level-req').innerText = (gameState.level * 50000).toLocaleString();
-    }
-
-    function saveAndSync() {
-        gameState.holdingName = document.getElementById('h-name-input').value;
-        gameState.holdingPhoto = document.getElementById('h-photo-input').value;
-        save();
-        updateUI();
-    }
-
-    // --- ALGORITHME DE CADENAS ---
-    function demarrerAlgorithme() {
-        const logBox = document.getElementById('console');
-        logBox.innerHTML = "> INTRUSION ALGORITHMIQUE...";
-        
-        setTimeout(() => {
-            let res = prompt("CRACKAGE RÉUSSI. NOM DE L'ENTREPRISE ?");
-            if(res) {
-                gameState.entreprises.push({id: Date.now(), nom: res, val: 5000});
-                gameState.patrimoine += 5000;
-                logBox.innerHTML = "> CIBLE ACQUISE : " + res;
-                save();
-                updateUI();
-                renderEntreprises();
-            }
-        }, 1000);
-    }
-
-    function renderEntreprises() {
-        const list = document.getElementById('ent-list');
-        list.innerHTML = gameState.entreprises.length ? "" : "<p style='text-align:center;color:#444'>Aucune filiale.</p>";
-        gameState.entreprises.forEach((ent, i) => {
-            list.innerHTML += `<div class="card"><h3>${ent.nom}</h3><p style="font-size:0.6rem">VALEUR : ${ent.val} Ø</p></div>`;
-        });
-    }
-
-    // --- ONGLETS ---
     function openTab(id) {
         document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
         document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
@@ -190,15 +172,9 @@
         if(id === 'map-tab') setTimeout(() => map.invalidateSize(), 200);
     }
 
-    // --- MAP ---
     var map = L.map('map', {zoomControl: false}).setView([45.858, 1.305], 16);
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
-
-    setInterval(() => {
-        document.getElementById('clock').innerText = new Date().toLocaleTimeString();
-    }, 1000);
-
-    init();
+    map.locate({setView: true, maxZoom: 16});
 </script>
 </body>
 </html>
