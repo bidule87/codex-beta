@@ -6,74 +6,88 @@
     <title>GEO EMPIRE - DIRECTION BANCAIRE</title>
     <style>
         :root {
-            --glass-bg: rgba(255, 255, 255, 0.92); /* Fond très clair et lumineux */
-            --bank-blue: #00509d;
-            --locked-red: #d90429;
-            --border: #ddd;
+            --glass: rgba(255, 255, 255, 0.88);
+            --bank-blue: #003366;
+            --accent-blue: #007bff;
+            --locked-red: #e63946;
         }
 
         body { 
-            /* Image de fond plus colorée et lumineuse */
-            background-image: url('https://images.unsplash.com/photo-1497215728101-856f4ea42174?auto=format&fit=crop&q=80&w=1200');
+            /* Image de fond ultra-colorée et nette */
+            background-image: url('https://images.unsplash.com/photo-1431540015161-0bf868a2d407?auto=format&fit=crop&q=80&w=1600');
             background-size: cover;
             background-attachment: fixed;
-            font-family: 'Segoe UI', sans-serif;
+            background-position: center;
+            font-family: 'Segoe UI', system-ui, sans-serif;
             margin: 0; padding: 0;
         }
 
-        .overlay { background: var(--glass-bg); min-height: 100vh; padding-bottom: 50px; }
+        .overlay { background: rgba(0, 0, 0, 0.2); min-height: 100vh; padding: 20px; }
 
-        header { background: #fff; padding: 15px 25px; border-bottom: 3px solid var(--bank-blue); display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
-
-        .stats-bar { background: var(--bank-blue); color: #fff; padding: 10px 25px; display: flex; gap: 30px; font-size: 0.85rem; }
-
-        .container { padding: 30px; max-width: 1100px; margin: auto; }
-
-        /* BANQUE STYLE TABLEAU PRO */
-        .bank-panel { background: #fff; border: 1px solid var(--border); border-radius: 8px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); overflow: hidden; }
-        
-        .panel-header { background: #f8f9fa; padding: 20px; border-bottom: 2px solid #eee; display: flex; justify-content: space-between; align-items: center; }
-
-        .lock-banner {
-            background: #fff0f0; border-left: 5px solid var(--locked-red); padding: 15px;
-            color: var(--locked-red); font-weight: bold; font-size: 0.9rem; margin: 20px;
+        /* HEADER TYPE APPLICATION PRO */
+        .app-container {
+            max-width: 1200px; margin: 0 auto;
+            background: var(--glass);
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+            overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.3);
         }
 
-        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-        th { background: #f1f1f1; padding: 12px; text-align: left; font-size: 0.8rem; text-transform: uppercase; color: #666; }
-        td { padding: 15px; border-bottom: 1px solid #eee; }
-
-        .input-tranche { padding: 8px; border: 1px solid #ccc; border-radius: 4px; width: 180px; font-family: monospace; }
-        .input-rate { padding: 8px; border: 1px solid #ccc; border-radius: 4px; width: 70px; text-align: center; font-weight: bold; }
-
-        .btn-save {
-            background: var(--bank-blue); color: white; border: none; padding: 15px 40px;
-            border-radius: 4px; cursor: pointer; font-weight: bold; float: right; margin: 20px;
-            transition: 0.3s;
+        header {
+            background: var(--bank-blue); color: white;
+            padding: 20px 30px; display: flex; justify-content: space-between; align-items: center;
         }
-        .btn-save:hover { background: #003f7d; }
+
+        .sub-header {
+            background: #f1f3f5; padding: 10px 30px; border-bottom: 1px solid #ddd;
+            display: flex; gap: 40px; font-size: 0.85rem; font-weight: 600;
+        }
+
+        .content { padding: 30px; height: 70vh; overflow-y: auto; }
+
+        /* TABLEAUX DE TRANCHES */
+        .section-bank { margin-bottom: 40px; }
+        .section-title { 
+            color: var(--bank-blue); border-bottom: 2px solid var(--bank-blue); 
+            padding-bottom: 10px; margin-bottom: 20px; display: flex; justify-content: space-between;
+        }
+
+        table { width: 100%; border-collapse: collapse; background: white; border-radius: 8px; overflow: hidden; }
+        th { background: #e9ecef; padding: 12px; text-align: left; font-size: 0.75rem; color: #495057; }
+        td { padding: 12px; border-bottom: 1px solid #eee; }
+
+        input {
+            padding: 8px; border: 1px solid #ced4da; border-radius: 4px;
+            width: 100%; box-sizing: border-box; font-family: monospace;
+        }
+        .input-rate { font-weight: bold; color: var(--accent-blue); text-align: right; }
+
+        /* BOUTONS */
+        .btn-add {
+            margin-top: 10px; background: none; border: 2px dashed #adb5bd;
+            color: #6c757d; padding: 10px; width: 100%; cursor: pointer; border-radius: 6px;
+        }
+        .btn-add:hover { background: #f8f9fa; color: var(--bank-blue); border-color: var(--bank-blue); }
+
+        .btn-del { color: var(--locked-red); border: none; background: none; cursor: pointer; font-weight: bold; }
+
+        .footer-actions {
+            background: #fff; padding: 20px 30px; border-top: 1px solid #ddd;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+
+        .btn-validate {
+            background: var(--bank-blue); color: white; border: none;
+            padding: 15px 40px; border-radius: 6px; font-weight: bold; cursor: pointer;
+        }
     </style>
 </head>
 <body>
 
 <div class="overlay">
-    <header>
-        <div style="font-weight: bold; font-size: 1.3rem; color: var(--bank-blue);">GEO EMPIRE <span style="font-weight: normal; color: #999;">| GESTION DES TAUX</span></div>
-        <div style="font-size: 0.9rem;">Banquier : <b>UNITÉ CODEX-ALPHA</b></div>
-    </header>
-
-    <div class="stats-bar">
-        <span>Capital de la Banque: <b>2 338,82 X Ø</b></span>
-        <span>Liquidités: <b>860,28 N Ø</b></span>
-        <span>Rang Mondial: <b>68e place</b></span>
-    </div>
-
-    <div class="container">
-        <div class="bank-panel">
-            <div class="panel-header">
-                <h2 style="margin:0; font-size: 1.1rem; color: var(--bank-blue);">CONFIGURATION DES TRANCHES D'EMPRUNT</h2>
-                <span style="background: #e7f3ff; color: #00509d; padding: 5px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: bold;">MODIFICATION HEBDOMADAIRE</span>
-            </div>
-
-            <div class="lock-banner">
-                🔒 ÉTAT : VERROUILLÉ. Toute modification sera
+    <div class="app-container">
+        <header>
+            <div>
+                <span style="font-size: 1.4rem; font-weight: 800; letter-spacing: 1px;">
