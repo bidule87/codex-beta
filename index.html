@@ -3,23 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>GEO EMPIRE</title>
+    <title>GEO EMPIRE - CODEX</title>
     <style>
-        :root { --blue: #00d9ff; --bg: #000; --gold: #d4af37; --dark-blue: #003540; }
+        :root { --blue: #00d9ff; --bg: #000; --gold: #d4af37; }
         body { background: var(--bg); color: #fff; font-family: 'Segoe UI', sans-serif; margin: 0; overflow: hidden; }
 
-        /* HEADER SANS IMAGE (STYLE HOLOGRAMME) */
+        /* HEADER HOLOGRAMME FIXE */
         .header-ia {
             padding: 15px 20px;
             display: flex;
             align-items: center;
-            background: linear-gradient(180deg, #050505 0%, #000 100%);
+            background: #050505;
             border-bottom: 1px solid var(--blue);
         }
 
         .ia-badge {
-            width: 50px;
-            height: 50px;
+            width: 45px;
+            height: 45px;
             border: 1px solid var(--blue);
             display: flex;
             align-items: center;
@@ -32,20 +32,19 @@
         .ia-badge span {
             color: var(--blue);
             font-weight: bold;
-            font-size: 1.2rem;
+            font-size: 1rem;
             text-shadow: 0 0 5px var(--blue);
         }
 
-        /* SECTION HOLDING */
         .main-content { padding: 20px; height: calc(100vh - 180px); overflow-y: auto; }
 
+        /* CARTE HOLDING */
         .holding-card {
             background: #080808;
             border: 1px solid #1a1a1a;
             padding: 25px;
             text-align: center;
             border-radius: 4px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
 
         .photo-container {
@@ -57,6 +56,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            overflow: hidden;
         }
 
         #holding-img { width: 100%; height: 100%; object-fit: cover; }
@@ -68,7 +68,6 @@
             border: 1px solid var(--blue);
             padding: 10px 15px;
             font-size: 0.7rem;
-            letter-spacing: 1px;
             font-weight: bold;
             text-transform: uppercase;
             cursor: pointer;
@@ -79,21 +78,20 @@
         
         input[type="text"] {
             width: 100%;
-            background: #000;
+            background: transparent;
             border: 0;
             border-bottom: 1px solid #333;
             color: var(--gold);
             padding: 10px;
             text-align: center;
-            font-size: 1.1rem;
+            font-size: 1.2rem;
             letter-spacing: 2px;
             outline: none;
         }
 
-        /* NAV BASSE */
         nav { position: fixed; bottom: 0; width: 100%; display: flex; background: #000; border-top: 1px solid #111; }
-        nav button { flex: 1; padding: 22px; background: none; border: none; color: #444; font-size: 0.65rem; text-transform: uppercase; font-weight: bold; }
-        nav button.active { color: var(--blue); }
+        nav button { flex: 1; padding: 22px; background: none; border: none; color: #444; font-size: 0.65rem; text-transform: uppercase; }
+        nav button.active { color: var(--blue); border-top: 1px solid var(--blue); }
     </style>
 </head>
 <body>
@@ -101,20 +99,20 @@
 <div class="header-ia">
     <div class="ia-badge"><span>C-A</span></div>
     <div>
-        <h2 style="margin:0; font-size: 0.9rem; color: var(--blue); letter-spacing: 1px;">CODEX-ALPHA</h2>
-        <p style="margin:0; font-size: 0.6rem; color: #444;">LIAISON SATELLITE ÉTABLIE</p>
+        <h2 style="margin:0; font-size: 0.9rem; color: var(--blue);">CODEX-ALPHA</h2>
+        <p style="margin:0; font-size: 0.6rem; color: #444;">SYSTÈME OPÉRATIONNEL</p>
     </div>
 </div>
 
 <div class="main-content">
     <div class="holding-card">
         <div class="photo-container">
-            <img id="holding-img" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=" alt="">
-            <span id="placeholder-text" style="color:#222; font-size:0.7rem;">AUCUN LOGO</span>
+            <img id="holding-img" src="" style="display:none;">
+            <span id="placeholder-text" style="color:#333; font-size:0.7rem;">INSÉRER LOGO</span>
         </div>
         
         <label class="btn-upload">
-            Mettre à jour le logo
+            CONFIGURER LOGO
             <input type="file" accept="image/*" onchange="loadPhoto(event)">
         </label>
         
@@ -132,9 +130,11 @@
 <script>
     function loadPhoto(event) {
         const reader = new FileReader();
+        const img = document.getElementById('holding-img');
         const placeholder = document.getElementById('placeholder-text');
         reader.onload = function(){
-            document.getElementById('holding-img').src = reader.result;
+            img.src = reader.result;
+            img.style.display = 'block';
             if(placeholder) placeholder.style.display = 'none';
         };
         reader.readAsDataURL(event.target.files[0]);
@@ -142,7 +142,7 @@
 
     function updateName() {
         const val = document.getElementById('name-input').value;
-        const display = document.querySelector('.active-name') || { innerText: '' };
+        // On pourrait ajouter un affichage dynamique ici si besoin
     }
 </script>
 
