@@ -1,150 +1,36 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>GEO EMPIRE - CODEX</title>
-    <style>
-        :root { --blue: #00d9ff; --bg: #000; --gold: #d4af37; }
-        body { background: var(--bg); color: #fff; font-family: 'Segoe UI', sans-serif; margin: 0; overflow: hidden; }
+<div class="card" style="margin-top:20px; border: 1px solid var(--gold); background: #050505;">
+    <h3 style="color:var(--gold); font-size:0.8rem; text-transform:uppercase; margin-bottom:15px;">
+        🕹️ ADMINISTRATION FINANCIÈRE
+    </h3>
 
-        /* HEADER HOLOGRAMME FIXE */
-        .header-ia {
-            padding: 15px 20px;
-            display: flex;
-            align-items: center;
-            background: #050505;
-            border-bottom: 1px solid var(--blue);
-        }
-
-        .ia-badge {
-            width: 45px;
-            height: 45px;
-            border: 1px solid var(--blue);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-right: 15px;
-            background: rgba(0, 217, 255, 0.1);
-            box-shadow: inset 0 0 10px var(--blue);
-        }
-
-        .ia-badge span {
-            color: var(--blue);
-            font-weight: bold;
-            font-size: 1rem;
-            text-shadow: 0 0 5px var(--blue);
-        }
-
-        .main-content { padding: 20px; height: calc(100vh - 180px); overflow-y: auto; }
-
-        /* CARTE HOLDING */
-        .holding-card {
-            background: #080808;
-            border: 1px solid #1a1a1a;
-            padding: 25px;
-            text-align: center;
-            border-radius: 4px;
-        }
-
-        .photo-container {
-            width: 140px;
-            height: 140px;
-            margin: 0 auto 20px;
-            border: 1px solid var(--gold);
-            background: #000;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-        }
-
-        #holding-img { width: 100%; height: 100%; object-fit: cover; }
-
-        .btn-upload {
-            display: inline-block;
-            background: transparent;
-            color: var(--blue);
-            border: 1px solid var(--blue);
-            padding: 10px 15px;
-            font-size: 0.7rem;
-            font-weight: bold;
-            text-transform: uppercase;
-            cursor: pointer;
-            margin-bottom: 20px;
-        }
-
-        input[type="file"] { display: none; }
-        
-        input[type="text"] {
-            width: 100%;
-            background: transparent;
-            border: 0;
-            border-bottom: 1px solid #333;
-            color: var(--gold);
-            padding: 10px;
-            text-align: center;
-            font-size: 1.2rem;
-            letter-spacing: 2px;
-            outline: none;
-        }
-
-        nav { position: fixed; bottom: 0; width: 100%; display: flex; background: #000; border-top: 1px solid #111; }
-        nav button { flex: 1; padding: 22px; background: none; border: none; color: #444; font-size: 0.65rem; text-transform: uppercase; }
-        nav button.active { color: var(--blue); border-top: 1px solid var(--blue); }
-    </style>
-</head>
-<body>
-
-<div class="header-ia">
-    <div class="ia-badge"><span>C-A</span></div>
-    <div>
-        <h2 style="margin:0; font-size: 0.9rem; color: var(--blue);">CODEX-ALPHA</h2>
-        <p style="margin:0; font-size: 0.6rem; color: #444;">SYSTÈME OPÉRATIONNEL</p>
-    </div>
-</div>
-
-<div class="main-content">
-    <div class="holding-card">
-        <div class="photo-container">
-            <img id="holding-img" src="" style="display:none;">
-            <span id="placeholder-text" style="color:#333; font-size:0.7rem;">INSÉRER LOGO</span>
+    <div style="margin-bottom:20px;">
+        <div style="display:flex; justify-content:space-between;">
+            <label style="font-size:0.6rem; color:var(--blue);">TAUX D'INTÉRÊT (PRÊTS)</label>
+            <span id="loan-val" style="color:var(--gold); font-family:monospace;">5.0%</span>
         </div>
-        
-        <label class="btn-upload">
-            CONFIGURER LOGO
-            <input type="file" accept="image/*" onchange="loadPhoto(event)">
-        </label>
-        
-        <input type="text" id="name-input" placeholder="NOM DE LA HOLDING" oninput="updateName()">
+        <input type="range" min="0" max="50" step="0.5" value="5" style="width:100%;" 
+               oninput="updateFinance('loan', this.value)">
+        <p style="font-size:0.5rem; color:#444;">Ce que les emprunteurs vous remboursent en plus.</p>
+    </div>
+
+    <div style="margin-bottom:10px;">
+        <div style="display:flex; justify-content:space-between;">
+            <label style="font-size:0.6rem; color:var(--blue);">RÉMUNÉRATION (ÉPARGNE)</label>
+            <span id="save-val" style="color:var(--gold); font-family:monospace;">2.0%</span>
+        </div>
+        <input type="range" min="0" max="10" step="0.1" value="2" style="width:100%;" 
+               oninput="updateFinance('save', this.value)">
+        <p style="font-size:0.5rem; color:#444;">Ce que vous payez à ceux qui déposent de l'argent.</p>
     </div>
 </div>
-
-<nav>
-    <button>Radar</button>
-    <button class="active">Holding</button>
-    <button>Filiales</button>
-    <button>Mairie</button>
-</nav>
 
 <script>
-    function loadPhoto(event) {
-        const reader = new FileReader();
-        const img = document.getElementById('holding-img');
-        const placeholder = document.getElementById('placeholder-text');
-        reader.onload = function(){
-            img.src = reader.result;
-            img.style.display = 'block';
-            if(placeholder) placeholder.style.display = 'none';
-        };
-        reader.readAsDataURL(event.target.files[0]);
-    }
-
-    function updateName() {
-        const val = document.getElementById('name-input').value;
-        // On pourrait ajouter un affichage dynamique ici si besoin
+    function updateFinance(type, val) {
+        if(type === 'loan') {
+            document.getElementById('loan-val').innerText = val + "%";
+        } else {
+            document.getElementById('save-val').innerText = val + "%";
+        }
+        // Ici, on enverra ces données à la base de données plus tard
     }
 </script>
-
-</body>
-</html>
