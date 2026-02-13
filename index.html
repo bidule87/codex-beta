@@ -9,34 +9,34 @@
             --neon-blue: #00d9ff; 
             --dark-bg: #000000; 
             --gold: #d4af37;
-            --cyan-text: #4eeaff;
         }
 
         body { 
             background-color: var(--dark-bg); 
             color: #ffffff; 
-            font-family: 'Segoe UI', sans-serif;
+            font-family: sans-serif;
             margin: 0;
             overflow: hidden;
         }
 
-        /* HEADER FIXE : L'UNITÉ IA CODEX */
+        /* HEADER IA (Fixe) */
         .header-ia {
-            padding: 15px 20px;
+            padding: 15px;
             display: flex;
             align-items: center;
-            background: #000;
-            border-bottom: 1px solid rgba(0, 217, 255, 0.3);
+            background: #050505;
+            border-bottom: 2px solid var(--neon-blue);
         }
 
         .ia-avatar {
-            width: 50px;
-            height: 50px;
+            width: 55px;
+            height: 55px;
             border-radius: 50%;
-            border: 1px solid var(--neon-blue);
+            border: 2px solid var(--neon-blue);
             box-shadow: 0 0 10px var(--neon-blue);
             margin-right: 15px;
             object-fit: cover;
+            background: #111;
         }
 
         /* SECTION HOLDING */
@@ -46,24 +46,20 @@
             overflow-y: auto;
         }
 
-        .player-profile-card {
+        .holding-card {
             background: #0a0a0a;
             border: 1px solid #222;
             padding: 20px;
-            border-radius: 8px;
             text-align: center;
-            margin-bottom: 20px;
+            border-radius: 10px;
         }
 
-        .holding-photo-frame {
-            width: 120px;
-            height: 120px;
+        .photo-container {
+            width: 130px;
+            height: 130px;
             margin: 0 auto 15px;
             border: 2px solid var(--gold);
-            padding: 5px;
-            background: #000;
-            position: relative;
-            overflow: hidden;
+            background: #111;
         }
 
         #holding-img {
@@ -72,54 +68,102 @@
             object-fit: cover;
         }
 
-        .section-title {
-            color: var(--gold);
-            font-size: 1rem;
-            margin-bottom: 20px;
-            text-transform: uppercase;
-        }
-
-        /* STYLISE LE BOUTON DE TÉLÉCHARGEMENT */
-        .upload-btn-wrapper {
-            position: relative;
-            overflow: hidden;
-            display: inline-block;
-            width: 100%;
-        }
-
+        /* BOUTON TELECHARGER */
         .btn-upload {
-            border: 1px solid var(--neon-blue);
+            background: rgba(0, 217, 255, 0.1);
             color: var(--neon-blue);
-            background-color: rgba(0, 217, 255, 0.1);
+            border: 1px solid var(--neon-blue);
             padding: 12px;
-            border-radius: 4px;
-            font-size: 0.8rem;
-            font-weight: bold;
             width: 100%;
-            cursor: pointer;
+            font-weight: bold;
             text-transform: uppercase;
+            cursor: pointer;
+            margin-top: 10px;
         }
 
-        .upload-btn-wrapper input[type=file] {
-            font-size: 100px;
-            position: absolute;
-            left: 0;
-            top: 0;
-            opacity: 0;
-        }
+        input[type="file"] { display: none; }
 
-        input[type=text] {
+        input[type="text"] {
             width: 100%;
             background: #111;
             border: 1px solid #333;
             color: white;
             padding: 12px;
-            border-radius: 4px;
+            margin-top: 15px;
             box-sizing: border-box;
-            margin-top: 10px;
         }
 
-        label {
-            color: var(--gold);
+        nav {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            display: flex;
+            background: #000;
+        }
+
+        nav button {
+            flex: 1;
+            padding: 20px;
+            background: none;
+            border: none;
+            color: #444;
             font-size: 0.7rem;
-            display: block
+            text-transform: uppercase;
+        }
+
+        nav button.active {
+            color: var(--neon-blue);
+            border-top: 2px solid var(--neon-blue);
+        }
+    </style>
+</head>
+<body>
+
+<div class="header-ia">
+    <img src="agent-femme.jpg" class="ia-avatar" alt="IA">
+    <div>
+        <h2 style="margin:0; font-size: 1rem; color: var(--neon-blue);">UNITÉ CODEX-ALPHA</h2>
+        <p style="margin:0; font-size: 0.6rem; color: #555;">SCANNER ACTIF</p>
+    </div>
+</div>
+
+<div class="main-content">
+    <div class="holding-card">
+        <div class="photo-container">
+            <img id="holding-img" src="https://via.placeholder.com/130/111/d4af37?text=LOGO" alt="Holding">
+        </div>
+        <h3 id="holding-name" style="color:var(--gold); margin:0;">MA HOLDING</h3>
+        
+        <label class="btn-upload">
+            TÉLÉCHARGER PHOTO
+            <input type="file" accept="image/*" onchange="loadPhoto(event)">
+        </label>
+        
+        <input type="text" id="name-input" placeholder="NOM DE L'EMPIRE" oninput="updateName()">
+    </div>
+</div>
+
+<nav>
+    <button>Radar</button>
+    <button class="active">Holding</button>
+    <button>Filiales</button>
+    <button>Mairie</button>
+</nav>
+
+<script>
+    function loadPhoto(event) {
+        const reader = new FileReader();
+        reader.onload = function(){
+            document.getElementById('holding-img').src = reader.result;
+        };
+        reader.readAsDataURL(event.target.files[0]);
+    }
+
+    function updateName() {
+        const val = document.getElementById('name-input').value;
+        document.getElementById('holding-name').innerText = val.toUpperCase() || "MA HOLDING";
+    }
+</script>
+
+</body>
+</html>
